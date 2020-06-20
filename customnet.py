@@ -25,7 +25,7 @@ def df(x, actvn):
 
 
 # neural network class
-class nn:
+class Model:
     def __init__(self, sizes, activations):
         self.w = [np.random.rand(a, b) for a, b in zip(sizes[1:], sizes[:-1])]
         self.b = [np.random.rand(size) for size in sizes[1:]]
