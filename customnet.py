@@ -1,89 +1,88 @@
 # import libraries
 import numpy as np
-import math
 from tqdm import tqdm
 
 
-# activation functions
-def f(x, actvn):
-    if actvn == 'relu':
-        return np.maximum(0, x)
-    elif actvn == 'sigmoid':
-        return 1 / (1 + np.exp(-x))
-    else:
-        return x
+# define activation functions
+def f(x, a):
+    return np.maximum(x, 0) if a == 'relu' else 1 / (1 + np.exp(-x)) if a == 'sigmoid' else x
 
 
-# derivative of activation functions
-def df(x, actvn):
-    if actvn == 'relu':
-        return x > 0
-    elif actvn == 'sigmoid':
-        return x * (1 - x)
-    else:
-        return 1
+# define activation derivatives
+def df(x, a):
+    return x > 0 if a == 'relu' else x - x ** 2 if a == 'sigmoid' else 1
 
 
-# neural network class
+# the code below is ugly, but it works
 class Model:
+    # initialize model
     def __init__(self, sizes, activations):
-        self.w = [np.random.rand(a, b) for a, b in zip(sizes[1:], sizes[:-1])]
-        self.b = [np.random.rand(size) for size in sizes[1:]]
-        self.layers = [np.zeros(size) for size in sizes]
-        self.a = activations
-        self.n = len(sizes) - 1
-
-    # feed forward input
-    def forward(self, x):
-        self.layers[0] = x
-        for i in range(0, self.n):
-            self.layers[i + 1] = f(np.dot(self.w[0], self.layers[i]), self.a[i])
-        return self.layers[-1]
+        self.W = [np.random.rand(a, b) for a, b in zip(sizes[1:], sizes[:-1])]
+        self.B = [np.random.rand(size) for size in sizes[1:]]
+        self.L = [np.zeros(size) for size in sizes]
+        self.actvns = activations
+        self.n = len(sizes)
 
     # compute last layer error
     def dlfunc(self, y, loss_fn):
-        if loss_fn == 'MSE':
-            return (self.layers[-1] - y) * df(self.layers[-1], self.a[-1])
-        elif loss_fn == 'BinaryCrossentropy':
-            return (self.layers[-1] - y) / len(y)
-        else:
-            return df(self.layers[-1], self.a[-1])
+        if loss_fn == 'mse':
+            return (self.L[-1] - y) * df(self.L[-1], self.actvns[-1])
+        elif loss_fn == 'ce':
+            return (self.L[-1] - y) / len(y)
+        elif loss_fn == 'none':
+            return df(self.L[-1], self.actvns[-1])
 
-    # backpropagate error and compute gradient
+    # feed forward input
+    def forward(self, x):
+        self.L[0] = x
+        for i in range(1, self.n):
+            self.L[i] = f(np.dot(self.W[i - 1], self.L[i - 1]) + self.B[i - 1], self.actvns[i - 1])
+        return self.L[-1]
+
+    # backpropagate error to compute gradient
     def backward(self, error):
         dw, db = [], []
-        for i in range(self.n - 1, -1, -1):
+        db.append(error)
+        dw.append(np.outer(error, self.L[-2]))
+        for i in range(self.n - 2, 0, -1):
+            error = np.dot(np.transpose(self.W[i]), error) * df(self.L[i], self.actvns[i - 1])
             db.append(error)
-            dw.append(np.outer(error, self.layers[i]))
-            error = np.dot(self.w[i], error)
-        return np.flip(dw, 0), np.flip(db, 0)
+            dw.append(np.outer(error, self.L[i - 1]))
+        return [np.flip(dw, 0), np.flip(db, 0)]
 
     # update weights and biases
-    def step(self, delta, lr):
-        self.w -= delta[0] * lr
-        self.b -= delta[1] * lr
+    def step(self, delta, alpha):
+        self.W -= delta[0] * alpha
+        self.B -= delta[1] * alpha
 
-    # SGD with momentum - https://distill.pub/2017/momentum/
+    # SGD with momentum reference https://distill.pub/2017/momentum/
     def SGD(self, x, y, batch_size, loss_fn, alpha, beta, epochs):
         # split data into batches
-        x = np.array_split(x, math.ceil(len(x) / batch_size))
-        y = np.array_split(y, math.ceil(len(y) / batch_size))
-        # initialize v and grad to zero
-        v = grad = np.array([[np.zeros(np.shape(w)) for w in self.w],
-                             [np.zeros(np.shape(b)) for b in self.b]])
-        for i in tqdm(range(epochs)):
+        x = np.array_split(x, (len(x) + len(x) % batch_size) / batch_size)
+        y = np.array_split(y, (len(y) + len(y) % batch_size) / batch_size)
+        # initialize v
+        v = grad = [np.array([np.zeros(np.shape(w)) for w in self.W]),
+                    np.array([np.zeros(np.shape(b)) for b in self.B])]
+        # stochastic gradient descent
+        for epoch in tqdm(range(epochs)):
             for x_batch, y_batch in zip(x, y):
                 for xi, yi in zip(x_batch, y_batch):
                     # feed forward input
                     self.forward(xi)
                     # compute last layer error
                     error = self.dlfunc(yi, loss_fn)
-                    # backpropagate error and compute gradient
-                    grad += self.backward(error)
+                    # backpropagate error to compute gradient
+                    temp = self.backward(error)
+                    grad[0] += temp[0]
+                    grad[1] += temp[1]
+                # compute mean gradient
+                grad[0] /= batch_size
+                grad[1] /= batch_size
                 # update v
-                v = v * beta + grad / batch_size
+                v[0] = beta * v[0] + grad[0]
+                v[1] = beta * v[1] + grad[1]
                 # update weights and biases
                 self.step(v, alpha)
-                # re-initialize grad to zero
-                grad = np.array([[np.zeros(np.shape(w)) for w in self.w],
-                                 [np.zeros(np.shape(b)) for b in self.b]])
+                # re-initialize grad for next batch
+                grad = [np.array([np.zeros(np.shape(w)) for w in self.W]),
+                        np.array([np.zeros(np.shape(b)) for b in self.B])]
