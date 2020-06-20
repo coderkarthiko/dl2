@@ -32,21 +32,23 @@ class Model:
         self.layers = [np.zeros(size) for size in sizes]
         self.a = activations
         self.n = len(sizes) - 1
-    
+
     # feed forward input
     def forward(self, x):
         self.layers[0] = x
         for i in range(0, self.n):
             self.layers[i + 1] = f(np.dot(self.w[0], self.layers[i]), self.a[i])
         return self.layers[-1]
-    
+
     # compute last layer error
     def dlfunc(self, y, loss_fn):
         if loss_fn == 'MSE':
             return (self.layers[-1] - y) * df(self.layers[-1], self.a[-1])
         elif loss_fn == 'BinaryCrossentropy':
             return (self.layers[-1] - y) / len(y)
-    
+        else:
+            return df(self.layers[-1], self.a[-1])
+
     # backpropagate error and compute gradient
     def backward(self, error):
         dw, db = [], []
@@ -55,7 +57,7 @@ class Model:
             dw.append(np.outer(error, self.layers[i]))
             error = np.dot(self.w[i], error)
         return np.flip(dw, 0), np.flip(db, 0)
-    
+
     # update weights and biases
     def step(self, delta, lr):
         self.w -= delta[0] * lr
