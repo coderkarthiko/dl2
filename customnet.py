@@ -41,11 +41,7 @@ class Model:
             db.append(error)
             dw.append(np.outer(error, self.L[i - 1]))
         return np.flip(dw, 0), np.flip(db, 0)
-
-    def step(self, deltaW, deltaB, alpha):
-        self.W -= deltaW * alpha
-        self.B -= deltaB * alpha
-
+    
     # SGD with momentum reference https://distill.pub/2017/momentum/
     def SGD(self, x, y, batch_size, loss_fn, alpha, beta, epochs):
         x = np.array_split(x, (len(x) + len(x) % batch_size) / batch_size)
@@ -60,6 +56,6 @@ class Model:
                     nablaW, nablaB = self.backward(error)
                     dW, dB = dW + nablaW, dB + nablaB
                 vW, vB = beta * vW + dW / batch_size, beta * vB + dB / batch_size
-                self.step(vW, vB, alpha)
+                self.W, self.B = self.W - vW * alpha, self.B - vB * alpha
                 dW = [np.zeros(np.shape(w)) for w in self.W]
                 dB = [np.zeros(np.shape(b)) for b in self.B]
