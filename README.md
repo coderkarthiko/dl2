@@ -5,4 +5,4 @@ A crude neural network library that I made. Adam, Adagrad, RMSprop coming soon a
 
 24/06/2020 update - SGD actually works...it just needs the right hyperparameters. 
 
-01/07/2020 update - After 1 hour of training on 1000 examples I got a test accuracy (tested on 10000 images) of 86 % which is ok I guess
+01/07/2020 update - After 1 hour of training on 1000 examples I got a test accuracy (tested on 10000 images) of 86 % which is ok I guess.
