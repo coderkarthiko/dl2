@@ -4,11 +4,21 @@ from tqdm import tqdm
 
 
 def f(x, a):
-    return np.maximum(x, 0) if a == 'relu' else 1 / (1 + np.exp(-x)) if a == 'sigmoid' else x
+    if a == 'relu':
+        return np.maximum(x, 0) 
+    elif a == 'sigmoid':
+        return 1 / (1 + np.exp(-x)) 
+    else:
+        return x
 
 
 def df(x, a):
-    return x > 0 if a == 'relu' else x - x ** 2 if a == 'sigmoid' else 1
+    if a == 'relu':
+        return x > 0  
+    elif a == 'sigmoid':
+        return x - x ** 2  
+    else:
+        return 1
 
 
 class Model:
