@@ -10,3 +10,5 @@ A crude neural network library that I made. Adam, Adagrad, RMSprop coming soon ~
 01/07/2020 update - After 1 hour of training on 1000 examples I got a test accuracy (tested on 10000 images) of 86% which is ok I guess.
 
 02/07/2020 update - After 2 hours of training on 10000 examples I got a test accuracy (tested on 10000 images) of 94% which is awesome!
+
+03/07/2020 update - After 2 hours of training on 60000 examples I got a test accuracy (tested on 10000 images) of 97% which is even better!
