@@ -1,4 +1,4 @@
-# CustomNet
+# dl
 
 19/06/2020 goal - make a neural net that can classify handwritten digits taken from your phone.
 
