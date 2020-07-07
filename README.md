@@ -18,4 +18,4 @@
 
 04/07/2020 update - It didn't feel right that I made a library that uses 2 activation functions but I made use of only 1...so after 10 minutes of hyperparameter adjusting and a mere 20 minutes of training (compared to 3 hours for sigmoid) using ReLU instead of sigmoid (no normalising), I got an accuracy of 96.55%. The second best result was an accuracy of 96.18% and it took just 10 minutes to train...ReLU > sigmoid, if I only I had used relu and proper weight initialization sooner instead of working on this for days :')...
 
-05/07/2020 update - Finally...the neural net correctly classified all the 10 images of my own handwritten digits (I had to take a really close-up photo in proper lighting though).  
+05/07/2020 end - Finally...the neural net correctly classified all the 10 images of my own handwritten digits (I had to take a really close-up photo in proper lighting though).  
