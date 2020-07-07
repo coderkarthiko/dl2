@@ -16,6 +16,6 @@
 
 03/07/2020 update - After 3 hours of training on 60000 examples, normalizing the data and increasing the learning rate I got a final test accuracy of 97.33%.
 
-04/07/2020 update - It didn't feel right that I made a library that uses 2 activation functions but I made use of only 1...so after 10 minutes of hyperparameter adjusting and a mere 20 minutes of training (compared to 3 hours for sigmoid) using ReLU instead of sigmoid (no normalising), I got an accuracy of 96.55%. The second best result was an accuracy of 96.18% and it took just 10 minutes to train...ReLU > sigmoid, if I only I had used relu and proper weight initialization sooner instead of working on this for days :')...
+04/07/2020 update - It didn't feel right that I made a library that uses 2 activation functions but I made use of only 1...so after 10 minutes of hyperparameter adjusting and a mere 20 minutes of training (compared to 3 hours for sigmoid) using ReLU instead of sigmoid (no normalising), I got an accuracy of 96.55%. The second best result was an accuracy of 96.18% and it took just 10 minutes to train...ReLU > sigmoid, if I only I had used relu and proper weight initialization sooner instead of working on this for days :')
 
 05/07/2020 end - Finally...after 8 minutes of training, the neural net correctly classified all the photos of my own handwritten digits (results are in testing.ipynb - I think it fails to classify correctly if the image isn't centered).
