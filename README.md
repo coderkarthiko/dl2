@@ -18,4 +18,4 @@
 
 04/07/2020 update - After 10 minutes of hyperparameter adjusting and a mere 20 minutes of training using ReLU instead of sigmoid (no normalising), I got an accuracy of 96.55%. The second best result was an accuracy of 96.18% and it took just 10 minutes to train. ReLU > sigmoid; if I only I had used ReLU and proper weight initialization sooner instead of working on this for days :')
 
-05/07/2020 end - Finally...after 8 minutes of training, the neural net correctly classified all the photos of my own handwritten digits. Rresults are in testing.ipynb - I think it fails to classify correctly if the image isn't centered.
+05/07/2020 end - Finally...after 8 minutes of training, the neural net correctly classified all the photos of my own handwritten digits. Results are in testing.ipynb - I think it fails to classify correctly if the image isn't centered.
