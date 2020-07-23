@@ -4,7 +4,7 @@ dl is a neural network library. I haven't specified an RNN class but we can stil
 
 ## old.ipynb
 
-Testing out the library. Got 97% max accuracy on the MNIST dataset after I specified the weight/bias initialization bounds and normalised the data. It took 3 hours which I didn't like. 
+Testing out the library. Got 97% max accuracy on the MNIST dataset after I specified the weight/bias initialization bounds and normalised the data. It took 3 hours though which I didn't like. ReLU performs MUCH faster but I don't know why.
 
 ## new.ipynb
 
