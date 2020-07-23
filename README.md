@@ -8,4 +8,4 @@ Playing around with parameters and testing it on the MNIST dataset.
 
 ## real.ipynb
 
-Testing it out on some real handwritten images.
+Testing it out on some real handwritten digits.
