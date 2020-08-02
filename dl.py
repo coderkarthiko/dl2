@@ -73,7 +73,8 @@ class Model:
                 dW = [np.zeros(np.shape(w)) for w in self.W]
                 dB = [np.zeros(np.shape(b)) for b in self.B]
             self.errors.append(err_sum / batch_size)
-            
+    
+    # error plot NOT loss plot!
     def plot(self, epochs, plt_size):
         assert epochs <= len(self.errors)
         figure = plt.figure(figsize=(plt_size[0], plt_size[1]))
