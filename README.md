@@ -12,4 +12,4 @@ Playing around with parameters and testing it on the MNIST dataset. 97% acc on M
 
 ## real.ipynb
 
-Testing the algorithm on some images I took on my phone. 
+Using images I took on my phone. 
