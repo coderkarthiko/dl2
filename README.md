@@ -12,7 +12,7 @@ Playing around with parameters and testing it on the MNIST dataset. 97% acc on M
 
 ## neuralstyletransfer.ipynb
 
-I don't use dl here - I use TF and the code is from its website. I just wanted to see how long it took to perform on Jupyter notebooks compare to Google colab. 
+I don't use dl here - I use TF and the code is from its website. I just wanted to see how long it took to perform on Jupyter notebooks compared to Google colab. 
 
 ## real.ipynb
 
