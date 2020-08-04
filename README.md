@@ -4,12 +4,20 @@ dl is a small/toy library that I made to understand how NNs work. It uses [momen
 
 ## gates.ipynb
 
-Learning AND, OR, XOR and NOT.
+Using a neural network to simulate AND, OR, XOR and NOT logic gates.
 
 ## mnist.ipynb
 
 Playing around with parameters and testing it on the MNIST dataset. 97% acc on MNIST using sigmoid after 3 hours of training. 96% acc on MNIST using ReLU after 10 minutes of training. The models were pretty wack at first when I was using NumPy's default uniform initialization - then I tried specifying distribution bounds manually during initialization (the larger the model, the smaller the bounds seemed to get) and it worked a LOT better. This was kinda tedious, considering we have better parameter initialization techniques like [this](https://www.deeplearning.ai/ai-notes/initialization/) and [this](https://mmuratarat.github.io/2019-02-25/xavier-glorot-he-weight-init) but I didn't know about them when I first wrote the library. Using He initialization I got my accuracy upto 98% which is pretty cool. 
 
+## neuralstyletransfer.ipynb
+
+I don't use dl here - I use TF and the code is from its website. I just wanted to see how long it took to perform on Jupyter notebooks compare to Google colab. 
+
 ## real.ipynb
 
 Using images I took on my phone. I had to downscale the images to a resolution of 28 by 28.
+
+## Q-learning using dl
+
+Coming soon!
