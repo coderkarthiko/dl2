@@ -1,10 +1,14 @@
 ## dl
 
-dl is a small/toy library that I made to understand how NNs work. It uses [momentum](https://distill.pub/2017/momentum/). Stochastic gradient descent is just momentum with beta = 0. I wanted to implement backpropagation and gradient descent from scratch. It took me a while to prove the update rules in the backpropagation. After staring at it long enough, I was able to understand and use the algorithm (reference - [this](http://www.cs.utoronto.ca/~ilya/pubs/ilya_sutskever_phd_thesis.pdf) paper, page 9). In the paper, the gradient matrix of the loss function with respect to weights between layers i and i - 1 is computed by taking the dot product of error in layer i and transpose of outputs of neurons in layer i - 1. Instead, I took the outer product of error in layer i and outputs of neurons in layer i - 1. I couldn't figure out why tranpose of output layer i was taken - so I took the outer product and it gave me the same results. The proof is quite simple.
+dl is a small/toy library that I made to understand how NNs work. It uses [momentum](https://distill.pub/2017/momentum/). Stochastic gradient descent is just momentum with beta = 0. I wanted to implement backpropagation and gradient descent from scratch. After staring at it long enough, I was able to understand and implement backpropagation (reference - [this](http://www.cs.utoronto.ca/~ilya/pubs/ilya_sutskever_phd_thesis.pdf) paper, page 9) - I also proved the update rules on my own. It wasn't hard - we just use the chain rule cleverly. 
 
 ## gates.ipynb
 
 Using a neural network to simulate AND, OR, XOR and NOT logic gates (it's much simpler than it sounds :'D).
+
+## hebb.ipynb
+
+An implementation of Hebbian learning. Hebbian learning is a different learning algorithm - it doesn't use backpropagation to update parameters. Instead, it is meant to simulate the locality of neuron activations in the human brain. This is a jupyter notebook from MIT 6.S191 lecture series.
 
 ## mnist.ipynb
 
@@ -20,4 +24,4 @@ Using images I took on my phone (images downscaled to 28x28 and then fed into a 
 
 ## Q-learning using dl (COMING SOON!)
 
-The [algorithm](https://miro.medium.com/max/1580/1*2wOzh6K4NMMrWYvZ0G5KUA.png) from the original Q learning paper is simple enough to implement once we have a game emulator. But making a game emulator is kind of tedious and I didn't want to use [OpenAI's gym](https://gym.openai.com/) either. Instead, I had the idea to define a game G as a recursive differentiable function. "Winning" or "getting a high score" in a game G is the same as optimizing an objective function and we do this using Q-learning and neural networks. I can't fully understand [why DQL converges](http://users.isr.ist.utl.pt/~mtjspaan/readingGroup/ProofQlearning.pdf) though. 
+The [algorithm](https://miro.medium.com/max/1580/1*2wOzh6K4NMMrWYvZ0G5KUA.png) from the original Q learning paper is simple enough to implement once we have a game emulator. But making a game emulator is kind of tedious and I didn't want to use [OpenAI's gym](https://gym.openai.com/) either. Instead, we can treat a game as a recursive function and we want optimize this function (we need to win the game) using Q-learning.
