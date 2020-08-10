@@ -16,4 +16,4 @@ Using images I took on my phone.
 
 ## proof.pdf
 
-Solutions to exercises [here](neuralnetworksanddeeplearning.com) + some more. 
+My solutions to exercises [here](neuralnetworksanddeeplearning.com) + some more. 
