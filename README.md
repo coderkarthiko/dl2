@@ -13,3 +13,7 @@ Playing around with parameters and testing it on the MNIST dataset. 97% acc on M
 ## real.ipynb
 
 Using images I took on my phone.
+
+## proof.pdf
+
+Solutions to exercises [here](neuralnetworksanddeeplearning.com) + some more. 
