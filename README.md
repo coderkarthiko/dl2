@@ -1,6 +1,6 @@
 ## dl
 
-dl is a small/toy library that I made to understand how neural networks work. It uses [momentum](https://distill.pub/2017/momentum/). I wanted to implement backpropagation from scratch (reference - [this](http://www.cs.utoronto.ca/~ilya/pubs/ilya_sutskever_phd_thesis.pdf) paper, page 9) - I also proved the update rules on my own. It wasn't too hard. We just use the chain rule in a fancy way.  
+dl is a small library that I made to understand how neural networks work. It uses [momentum](https://distill.pub/2017/momentum/). I wanted to implement backpropagation from scratch (reference - [this](http://www.cs.utoronto.ca/~ilya/pubs/ilya_sutskever_phd_thesis.pdf) paper, page 9) - I also proved the update rules on my own. It wasn't too hard. We just use the chain rule in a fancy way.  
 
 ## gates.ipynb
 
