@@ -1,3 +1,6 @@
+# Updated library - haven't tested it yet!
+# Added optimizer class and softmax activation - useful for basic RL and performs MUCH better at classification!
+
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -60,7 +63,7 @@ class optim:
 # SGD with momentum - https://distill.pub/2017/momentum/
 class SGD(optim):
     def __init__(self, params, lr, beta):
-        super().__init__(optim, params, grad, lr)
+        super().__init__(SGD, params, grad, lr)
         self.beta = beta
         self.vW, self.vB = self.dW, self.dB
     
@@ -80,7 +83,7 @@ class SGD(optim):
 # Adam: A Method for Stochastic Optimization - https://arxiv.org/pdf/1412.6980.pdf
 class Adam(optim):
     def __init__(self, params, lr, grad, beta, _beta, epsilon):
-        super().__init__(optim, params, grad, lr)
+        super().__init__(Adam, params, grad, lr)
         self.t = 0
         self.beta, self._beta, self.epsilon = beta, _beta, epsilon
         self.vW, self.mW = self.dW, self.dW
@@ -132,8 +135,10 @@ class Model:
     def dl(self, y, loss_fn):
         if loss_fn == 'mse': 
             return (self.L[-1] - y) * df(self.L[-1], self.actvns[-1])
+        # use only when last layer is sigmoid or softmax!
         elif loss_fn == 'ce': 
             return self.L[-1] - y
+        # useful for RL algorithms like REINFORCE, policy gradient and the like
         elif loss_fn == 'log': 
             return y * df(self.L[-1], 'softmax') / self.L[-1]
         else:
@@ -191,7 +196,7 @@ class Model:
                     loss_sum += np.sum(loss)
                     delW, delB = self.backward(error)
                     self.opt.dW, self.opt.dB = self.opt.dW + delW, self.opt.dB + delB
-                self.opt.step()
+                self.W, self.B = self.opt.step()
             self.errors.append(err_sum / batch_size)
             self.losses.append(loss_sum / batch_size)
             
