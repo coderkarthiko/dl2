@@ -153,7 +153,7 @@ class Model:
         self.opt = opt
         self.compiled = True
     
-    # compute dJ/dz, z is final layer input
+    # compute dJ/da, a is final layer input
     def dL(self, y, loss_fn):
         if loss_fn == 'mse': # mean squared error loss grad
             return (self.L[-1] - y) * df(self.L[-1], self.actvns[-1])
@@ -208,8 +208,9 @@ class Model:
                 self.W, self.B = self.opt.step() # update parameters
                 self.dW, self.dB = self.opt.zero() # zero gradients for next batch
             self.opt.reset() # zero past gradients
-            self.errors.append(err / len(data)) 
-            self.losses.append(lss / len(data))
+            err, lss = err / len(data), lss / len(data)
+            self.errors.append(err) 
+            self.losses.append(lss)
         return self.errors, self.losses
 
     def params(self):
