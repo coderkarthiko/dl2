@@ -1,11 +1,8 @@
 ## dl.py
 dl is a small library I made to understand how neural networks and gradient descent optimizers work. I have benchmarked momentum, Adam and RMSprop on MNIST and used dl for simple problems like modelling logic gates. dl can also be used to implement reinforcement learning algorithms like REINFORCE or DQL for simple games in OpenAI's gym environment like CartPole-v0, Pong-v0, Pacman-v0 etc or gridworld games. dl uses the standard backpropagation algorithm (shown below) for dense networks. Libraries like PyTorch and Tensorflow on the other hand, use reverse mode differentiation. All operations done on variables are kept track of (represented as a DAG), and calling the backward() (gradient(loss, parameters) in TensorFlow) method on the output scalar computes the gradient of that scalar w.r.t all the variables.
 
-#### Backpropagation
 ![](backpropagation.png)
 
-
-#### Gradient descent optimizers 
 ![](optims.gif)
 
 ## GATES.ipynb - modelling logic gates using NNs
