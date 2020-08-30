@@ -1,2 +1,2 @@
 ### dl 
-dl is a small library I made to understand how neural networks and gradient descent optimizers work. I have benchmarked momentum, Adam and RMSprop on MNIST and used dl for simple problems like modelling logic gates. Libraries like TensorFlow and Pytorch abstract many nitty-gritty details of training neural nets which I didn't like very much. I wanted to see what's going on under the hood. 
+dl is a small library I made to understand how neural networks and gradient descent optimizers work. I have benchmarked momentum, Adam and RMSprop on MNIST and used dl for simple problems like modelling logic gates. 
