@@ -6,7 +6,8 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](optims.gif)
 
 ## GATES.ipynb - modelling logic gates using NNs
-A classic problem in machine learning is using a neural networks to model XOR. XOR is not linearly separable - and neural networks are good at approximating non-linearly separable data. They are approximations becauase it's very hard to model with 100% accuracy. In the plots, we can clearly see boundaries (black->yellow) where the output jumps from 1 to 0. Logic gates have binary inputs but neural networks can have real inputs. So we can not only input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - here, it's 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. For XOR, (0, 0) => 0, (1, 0) => 1, (0, 1) => 1 and (1, 1) => 0 as it should be.
+A classic problem in machine learning is using a neural networks to model XOR. XOR is not linearly separable - and neural networks are good at approximating non-linearly separable data. They are approximations becauase it's very hard to model with 100% accuracy. In the plots, we can clearly see boundaries (black->yellow) where the output jumps from 1 to 0. Logic gates have binary inputs but neural networks can have real inputs. So we can not only input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - here, it's 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. 
+For XOR, (0, 0) => 0, (1, 0) => 1, (0, 1) => 1 and (1, 1) => 0 as it should be.
 
 ![](gatecontours.png)
 
