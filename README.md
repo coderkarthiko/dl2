@@ -9,7 +9,9 @@ A classic problem in machine learning is using a neural networks to model XOR. X
 ![](gatecontours.png)
 
 ## GANs
+Generative Adverserial Networks belong to a class of machine learning models called generative models. Generative models are used to learn data distributions using unsupervised learning. GANs were introduced in 2014 by Goodfellow et al. and is an elegant technique to create novel data that represents some data set. For example, given images of digits, GANs can be used to create different variations of digits. The cool thing about GANs is that the generator in a GAN takes in noise as input - which is why we are able to create novel data!
 
+![](gan.jpeg)
 
 ## tfGAN.ipynb - GANs and MNIST using TensorFlow!
 
