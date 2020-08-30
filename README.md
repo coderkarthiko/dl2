@@ -14,6 +14,6 @@ Generative Adverserial Networks belong to a class of machine learning models cal
 ![](gan.jpeg)
 
 ## tfGAN.ipynb
-My implementation of a simple GAN using TensorFlow
+My implementation of a simple GAN using TensorFlow.
 
 ![](tfoutput.gif)
