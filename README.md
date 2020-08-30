@@ -8,5 +8,9 @@ A classic problem in machine learning is using a neural networks to model XOR. X
 
 ![](gatecontours.png)
 
+## GANs
+
+
 ## tfGAN.ipynb - GANs and MNIST using TensorFlow!
+
 ![](tfoutput.gif)
