@@ -5,4 +5,4 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](gatecontours.png)
 
 ### tfGAN.ipynb - GANs and MNIST using TensorFlow!
-![](output.gif)
+![](tfoutput.gif)
