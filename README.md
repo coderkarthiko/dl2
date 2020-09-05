@@ -23,3 +23,6 @@ Generative Adversarial Networks belong to a class of machine learning models cal
 GAN TensorFlow implementation
 
 ![](tfgan.gif)
+
+## Convolutions.ipynb
+A simple CNN implementation. No ML libraries used - I wrote the forward and backward pass using pure NumPy. Forward and backward pass of the implementation is a bit different from usual CNN implementation. It achieved a mere 90% accuracy on MNIST and it took about an hour to train. 
