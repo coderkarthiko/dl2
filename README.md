@@ -8,6 +8,8 @@ dl is a small library I made to understand how neural networks and gradient desc
 ## dl2.py
 dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers. Has a Keras-like (kinda :')) API. It used Numba to accelerate NumPy computations but even with fewer parameters than a MLP, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs but also supports convolution, transpose convolution, sub-sampling and super-sampling (can be used for making GANs and auto-encoders!). For the same neural net architecture, TF and PyTorch still seem to beat neural net operations written in pure NumPy. Uses XAVIER and HE initialization and supports most GD optimizers (we can add more if we want).  
 
+![](LeNet-5.jpg)
+
 ## GATES.ipynb - modelling logic gates using NNs
 A classic toy problem in machine learning is using a neural network to model XOR. XOR is not a linearly separable function - and neural networks are good at approximating non-linearly separable data. Logic gates have binary inputs but neural networks can have real inputs. So not only can we input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - here, it's 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. In the plots, we can clearly see boundaries (black->yellow) where the output jumps from 1 to 0 and 0 to 1.
 
