@@ -6,7 +6,7 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](optims.gif)
 
 ## dl2.py
-dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers. Has a Keras-like (kinda :')) API. It used Numba to accelerate NumPy computations but even with fewer parameters than a MLP, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs but also supports convolution, transpose convolution, sub-sampling and super-sampling (can be used for making GANs and auto-encoders!). For the same neural net architecture, TF and PyTorch still seem to beat neural net operations written in pure NumPy. Uses XAVIER and HE initialization and supports most GD optimizers (we can add more if we want).  
+dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers. Has a Keras-like (kinda :')) API. It used Numba to accelerate NumPy computations but even with fewer parameters than an MLP, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs but also supports convolution, transpose convolution, sub-sampling and super-sampling (can be used for making GANs and auto-encoders!). For the same neural net architecture, TF and PyTorch still seem to beat neural net operations written in pure NumPy. Uses XAVIER initialization and supports most GD optimizers (we can add more if we want).  
 
 ![](LeNet-5.jpg)
 
@@ -33,4 +33,15 @@ GAN TensorFlow implementation
 Simple CNN implementations. No ML libraries used - forward and backward pass using pure NumPy. Forward and backward pass of the implementation is a bit different from usual CNN implementation. It achieved a mere 90% accuracy on MNIST and it took about an hour to train. 
 
 ## CNNdl2.ipynb
-CNN implementation using dl2 to train an MNIST classifier
+CNN implementation using dl2 to train an MNIST classifier.
+
+## References
+1. [neuralnetworksanddeeplearning.com](neuralnetworksanddeeplearning.com)
+2. [MIT 6.S191: Introduction to Deep Learning](http://introtodeeplearning.com/)
+3. [Stanford CS231n: Convolutional Neural Networks](http://cs231n.stanford.edu/)
+4. [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661)
+5. [DQN](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)
+6. [Why Momentum Really Works](https://distill.pub/2017/momentum/)
+7. [An Overview of Gradient Descent Optimizers](https://ruder.io/optimizing-gradient-descent/)
+8. [Understanding Convolutions](https://colah.github.io/posts/2014-07-Understanding-Convolutions/)
+9. [Calculus on Computational Graphs](https://colah.github.io/posts/2015-08-Backprop/)
