@@ -7,9 +7,6 @@ from tqdm import tqdm
 # accelerate using numba
 use_numba = True
 
-# sqrt(6) for XAVIER initialization
-xav = 2.44948974278317809819728407
-
 
 def onehot(y, labels):
     n = len(y)
@@ -376,7 +373,7 @@ class NN:
             # fc-layer
             elif self.layers[i]['layer'] == 'dense':
                 input_dim, output_dim = self.layers[i]['input_dim'], self.layers[i]['output_dim']
-                boundW, boundB = xav / (input_dim + output_dim), xav / output_dim
+                boundW, boundB = (6 ** 0.5) / (input_dim + output_dim), (6 ** 0.5) / output_dim
                 self.W.append(np.random.uniform(-boundW, boundW, (output_dim, input_dim)))
                 self.B.append(np.random.uniform(-boundB, boundB, (output_dim)))
                 self.L.append(np.zeros(output_dim))
