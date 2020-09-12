@@ -31,3 +31,6 @@ GAN TensorFlow implementation
 
 ## Convolutions1.ipynb and Convolutions2.ipynb
 Simple CNN implementations. No ML libraries used - forward and backward pass using pure NumPy. Forward and backward pass of the implementation is a bit different from usual CNN implementation. It achieved a mere 90% accuracy on MNIST and it took about an hour to train. 
+
+## CNNdl2.ipynb
+CNN implementation using dl2 to train an MNIST classifier
