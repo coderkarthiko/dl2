@@ -34,7 +34,7 @@ My implementation of a GAN using TensorFlow.
 # CNNdl2.ipynb
 CNN implementation using dl2 to train an MNIST classifier. Here, I compare the performances of various gradient descent optimizers. It took me a while to figure out backpropagation through convolution, transpose convolution, pooling (sub-sampling) and transpose pooling (super-sampling) layers. 
 
-#### Different optimizers reach a local minima at different rates.
+#### Different optimizers reach a local minima at different rates
 
 ![](optims.gif)
 
