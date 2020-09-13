@@ -64,7 +64,7 @@ def poolT(pool_size, strides, input_dim=None):
 
 
 def conv2dT(channels, filters_dim, strides, activation='none', bias=True, input_dim=None):
-    return {'input_dim': input_dim, 'output_dim': output_dim, 'bias': bias, 'channels': channels, 'filters_dim': filters_dim, 
+    return {'input_dim': input_dim, 'output_dim': None, 'bias': bias, 'channels': channels, 'filters_dim': filters_dim, 
             'strides': strides, 'layer': 'conv2dT', 'activation': activation}
         
 
@@ -498,7 +498,7 @@ class NN:
             elif self.layers[i]['layer'] == 'conv2dT':
                 self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
                 self.L[i] = f(cnnTforward(self.L[i], self.W[i - 1], self.B[i - 1], 
-                                          self.layers[i]['strides'], self.layers[i]['bias']), 
+                                          self.layers[i]['strides'], self.layers[i]['output_dim'], self.layers[i]['bias']), 
                               self.layers[i]['activation'])
         # return output
         return self.L[-1]
