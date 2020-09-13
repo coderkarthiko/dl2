@@ -45,3 +45,6 @@ CNN implementation using dl2 to train an MNIST classifier.
 7. [An Overview of Gradient Descent Optimizers](https://ruder.io/optimizing-gradient-descent/)
 8. [Understanding Convolutions](https://colah.github.io/posts/2014-07-Understanding-Convolutions/)
 9. [Calculus on Computational Graphs](https://colah.github.io/posts/2015-08-Backprop/)
+10. [Gradient-Based Learning Applied to Document Recognition (first use of CNNs for character recognition!)](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
+11. [Automatic Reverse-Mode Differentiation](http://www.cs.cmu.edu/~wcohen/10-605/notes/autodiff.pdf)
+12. [Universal Approximation Theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem#:~:text=In%20the%20mathematical%20theory%20of,given%20function%20space%20of%20interest.)
