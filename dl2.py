@@ -201,8 +201,8 @@ def poolTbackward(error, x, pool_size, strides, output_dim):
 
 # transpose convolution forward pass
 @nb.jit(nopython=use_numba)
-def cnnTforward(x, filters, bias, strides, _bias=True):
-    input_dim, output_dim, filters_dim = np.shape(x), np.shape(bias), np.shape(filters)
+def cnnTforward(x, filters, bias, strides, output_dim, _bias=True):
+    input_dim, filters_dim = np.shape(x), np.shape(filters)
     z = np.zeros(output_dim)
     for i in range(input_dim[0]):
         r_, _r = strides[0] * i, strides[0] * i + filters_dim[1]
@@ -408,7 +408,7 @@ class NN:
                 self.layers[i]['output_dim'] = output_dim
                 self.W.append(np.random.normal(0, (6 / filters_dim[0] * filters_dim[1] * channels) ** 0.5, 
                                                (input_dim[2], filters_dim[0], filters_dim[1], channels)))
-                self.B.append(np.random.normal(0, (6 / output_dim[0] * output_dim[1] * channels) ** 0.5, (output_dim)) 
+                self.B.append(np.random.normal(0, (6 / output_dim[0] * output_dim[1] * channels) ** 0.5, output_dim) 
                               if self.layers[i]['bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
@@ -583,7 +583,8 @@ class NN:
         return {'neurons': self.neurons, 'first_layer_grads': self.first_layer_grads, 
                 'losses': self.losses, 'last_layer_grads': self.last_layer_grads}
 
-    def params(self): return self.W, self.B
+    def params(self): 
+        return self.W, self.B
     
     def info(self):
         for layer in self.layers[1:]:
