@@ -10,6 +10,11 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](cnnforward.png)
 
+# Cybenko's theorem - CYBENKO's-THEOREM-dl2.ipynb
+Neural networks are universal function approximators! 
+
+![]
+
 # GATES-dl.ipynb - modelling logic gates using neural networks
 A classic toy problem in machine learning is using a neural network to model XOR. XOR is not a linearly separable function - and neural networks are good at approximating non-linear transformations. Logic gates have binary inputs but neural networks can have real inputs. So not only can we input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - say, 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. In the plots, we can clearly see boundaries (black -> yellow) where the output jumps from 1 to 0 and 0 to 1.
 
