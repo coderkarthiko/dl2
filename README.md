@@ -31,8 +31,8 @@ My implementation of a GAN using TensorFlow.
 ![](tfgan.gif)
 
 
-# CNNdl2.ipynb
-CNN implementation using dl2 to train an MNIST classifier. Here, I compare the performances of various gradient descent optimizers. It took me a while to figure out backpropagation through convolution, transpose convolution, pooling (sub-sampling) and transpose pooling (super-sampling) layers. 
+# CNN-MLP-benchmarks-dl2.ipynb
+CNN + MLP implementation using dl2 to train an MNIST classifier. Here, I compare the performances of various gradient descent optimizers on MLPs and CNNs. It took me a while to figure out backpropagation through convolution, transpose convolution, pooling (sub-sampling) and transpose pooling (super-sampling) layers. 
 
 #### Different optimizers reach a local minima at different rates
 
@@ -55,3 +55,4 @@ CNN implementation using dl2 to train an MNIST classifier. Here, I compare the p
 10. [Gradient-Based Learning Applied to Document Recognition (first use of CNNs for character recognition!)](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
 11. [Automatic Reverse-Mode Differentiation](http://www.cs.cmu.edu/~wcohen/10-605/notes/autodiff.pdf)
 12. [Universal Approximation Theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem#:~:text=In%20the%20mathematical%20theory%20of,given%20function%20space%20of%20interest.)
+13. [GAN hacks](https://github.com/soumith/ganhacks)
