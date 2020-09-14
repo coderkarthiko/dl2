@@ -22,20 +22,19 @@ Generative Adversarial Networks belong to a class of machine learning models cal
 
 ![](gan.jpeg)
 
-#### The GAN training algorithm from the original paper
-
-![](gan.png)
-
 # GAN-tf.ipynb
 My implementation of a GAN using TensorFlow. 
-
-# GAT-dl2.ipynb
-My implementation of adversarial training using dl2
 
 #### Evolution through epochs
 
 ![](tfgan.gif)
 
+# GAT-dl2.ipynb
+My implementation of adversarial training using dl2
+
+#### The GAN training algorithm from the original paper
+
+![](gan.png)
 
 # CNN-MLP-benchmarks-dl2.ipynb
 CNN + MLP implementation using dl2 to train an MNIST classifier. Here, I compare the performances of various gradient descent optimizers on MLPs and CNNs. It took me a while to figure out backpropagation through convolution, transpose convolution, pooling (sub-sampling) and transpose pooling (super-sampling) layers. 
