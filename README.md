@@ -35,7 +35,7 @@ My implementation of a GAN using TensorFlow.
 ![](tfgan.gif)
 
 # GAT-dl2.ipynb
-My implementation of adversarial training using dl2
+My implementation of adversarial training using dl2.
 
 #### The GAN training algorithm from the original paper
 
