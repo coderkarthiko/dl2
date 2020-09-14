@@ -6,8 +6,11 @@ dl is a small library I made to understand how neural networks and gradient desc
 # dl2.py - an even better neural network library
 dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It used Numba to accelerate NumPy computations but even with fewer parameters than an MLP, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs but also supports convolution, transpose convolution, sub-sampling and super-sampling (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy. dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually). 
 
+#### Convolution 
 
-# GATES.ipynb - modelling logic gates using neural networks
+![](cnnforward.png)
+
+# GATES-dl.ipynb - modelling logic gates using neural networks
 A classic toy problem in machine learning is using a neural network to model XOR. XOR is not a linearly separable function - and neural networks are good at approximating non-linear transformations. Logic gates have binary inputs but neural networks can have real inputs. So not only can we input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - say, 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. In the plots, we can clearly see boundaries (black -> yellow) where the output jumps from 1 to 0 and 0 to 1.
 
 ![](gatecontours.png)
@@ -23,7 +26,7 @@ Generative Adversarial Networks belong to a class of machine learning models cal
 
 ![](gan.png)
 
-# GANtf.ipynb
+# GAN-tf.ipynb
 My implementation of a GAN using TensorFlow. 
 
 #### Evolution through epochs
