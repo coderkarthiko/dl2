@@ -29,6 +29,9 @@ Generative Adversarial Networks belong to a class of machine learning models cal
 # GAN-tf.ipynb
 My implementation of a GAN using TensorFlow. 
 
+# GAT-dl2.ipynb
+My implementation of adversarial training using dl2
+
 #### Evolution through epochs
 
 ![](tfgan.gif)
