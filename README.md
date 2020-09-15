@@ -4,14 +4,14 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](backpropagation.png)
 
 # dl2.py - an even better neural network library
-dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It used Numba to accelerate NumPy computations but even with fewer parameters than an MLP, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs but also supports convolution, transpose convolution, sub-sampling and super-sampling (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy. dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually). 
+dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It uses Numba to accelerate NumPy computations but even with fewer parameters than MLPs, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs but also supports backpropagation through convolution, transpose convolution, sub-sampling and super-sampling layers (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy (which is what my library is). dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph (DCG)). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). 
 
 #### Convolution 
 
 ![](cnnforward.png)
 
-# Cybenko's theorem - CYBENKO's-THEOREM-dl2.ipynb
-Neural networks are universal function approximators! 
+# CYBENKO's-THEOREM-dl2.ipynb
+Cybenko's theorem states that neural networks with single hidden layers are universal function approximators. However, it's actually quite hard to model functions with a single hidden layer. 
 
 ![](classification.gif)
 
