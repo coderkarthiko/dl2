@@ -12,6 +12,8 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 #### Batch normalization computational graph
 
+![](bncircuit.png)
+
 # CYBENKO's-THEOREM-dl2.ipynb
 Cybenko's theorem states that neural networks with single hidden layers are universal function approximators. However, it's actually quite hard to model functions with a single hidden layer. 
 
