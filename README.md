@@ -16,7 +16,7 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 #### Gradient of loss function w.r.t to inputs of batch-norm layer
 
-![]()
+![](bnorm_grad.png)
 
 # CYBENKO's-THEOREM-dl2.ipynb
 Cybenko's theorem states that neural networks with single hidden layers are universal function approximators. However, it's actually quite hard to model functions with a single hidden layer. 
