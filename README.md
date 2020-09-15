@@ -69,7 +69,11 @@ CNN + MLP implementation using dl2 to train an MNIST classifier. Here, I compare
 15. [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift<sup>5</sup>](https://arxiv.org/abs/1502.03167)
 
 *1. I could have watched 3b1b's deep learning videos, but I wanted to learn it without someone explaining it to me - this website was great!*
+
 *2. Introduced me to Hebbian learning - very interested in alternatives to backpropagation...*
+
 *3. Realized that forward mode differentiation is different from numerical/symbolic methods of computing derivatives - very elegant!*
+
 *4. The website didn't really go over how to actually compute the softmax gradient matrix - after some fiddling around, I figured it out. All we need to do is compute the outer product of softmax layer with itself, multiply by negative one, multiply trace of the square matrix by 2, take the sum of elements in each row. We end up with the derivative of the objective function w.r.t inputs of the softmax layer (a.k.a error in the softmax layer). Then you backpropagate the error as usual...*
+
 *5. Batch normalization is used to reduce internal covariate shift. Here too, I could not immediately understand how backpropagation is done. So after some more fiddling around, I figured it out. It's quite simple. During the forward pass, we subtract from the layer the layer mean and divide by it's standard deviation. Then we scale by factor gamma and shift by a factor beta and gamma and beta are parameters to be learnt. The batch-norm layer error is a function of gamma, # neurons and the standard deviation. We backpropagate the batch-norm error as usual...*
