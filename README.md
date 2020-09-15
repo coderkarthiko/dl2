@@ -68,7 +68,10 @@ CNN + MLP implementation using dl2 to train an MNIST classifier. Here, I compare
 14. [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/abs/1502.03167)
 15. [The Softmax function and it's derivative<sup>4</sup>](https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
 
-*1* I could have watched 3b1b's deep learning videos, but I wanted to learn it without someone explaining it to me - this website was great!
-*2* Introduced me to Hebbian learning - very interested in alternatives to backpropagation...
-*3* Realized that forward mode differentiation is different from numerical/symbolic methods of computing derivatives - very elegant!
-*4* The website didn't really go over how to actually compute the softmax gradient matrix - all you need to do is compute the outer product of softmax layer with itself multiply by negative one, multiply trace of the square matrix by 2, take the sum of elements in each row and you end up with the derivative of the objective function w.r.t input of softmax layer (a.k.a error in the softmax layer). Then you backpropagate the error. Coding ML algorithms like backprop and GD is a much better way to understanding them rather than just looking at the math... 
+*1. I could have watched 3b1b's deep learning videos, but I wanted to learn it without someone explaining it to me - this website was great!*
+
+*2. Introduced me to Hebbian learning - very interested in alternatives to backpropagation...*
+
+*3. Realized that forward mode differentiation is different from numerical/symbolic methods of computing derivatives - very elegant!*
+
+*4. The website didn't really go over how to actually compute the softmax gradient matrix - all you need to do is compute the outer product of softmax layer with itself multiply by negative one, multiply trace of the square matrix by 2, take the sum of elements in each row and you end up with the derivative of the objective function w.r.t input of softmax layer (a.k.a error in the softmax layer). Then you backpropagate the error. Coding ML algorithms like backprop and GD is a much better way to understanding them rather than just looking at the math...*
