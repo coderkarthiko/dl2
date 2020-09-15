@@ -57,27 +57,18 @@ CNN + MLP implementation using dl2 to train an MNIST classifier. Here, I compare
 ![](LeNet-5.jpg)
 
 # References
-1. [neuralnetworksanddeeplearning.com<sup>1</sup>](neuralnetworksanddeeplearning.com)
-2. [MIT 6.S191: Introduction to Deep Learning<sup>2</sup>](http://introtodeeplearning.com/)
+1. [neuralnetworksanddeeplearning.com](neuralnetworksanddeeplearning.com)
+2. [MIT 6.S191: Introduction to Deep Learning](http://introtodeeplearning.com/)
 3. [Stanford CS231n: Convolutional Neural Networks](http://cs231n.stanford.edu/)
 4. [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661)
 6. [Why Momentum Really Works](https://distill.pub/2017/momentum/)
 7. [An Overview of Gradient Descent Optimizers](https://ruder.io/optimizing-gradient-descent/)
 8. [Understanding Convolutions](https://colah.github.io/posts/2014-07-Understanding-Convolutions/)
-9. [Calculus on Computational Graphs<sup>3</sup>](https://colah.github.io/posts/2015-08-Backprop/)
+9. [Calculus on Computational Graphs](https://colah.github.io/posts/2015-08-Backprop/)
 10. [Gradient-Based Learning Applied to Document Recognition](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
 11. [Automatic Reverse-Mode Differentiation](http://www.cs.cmu.edu/~wcohen/10-605/notes/autodiff.pdf)
 12. [Universal Approximation Theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem#:~:text=In%20the%20mathematical%20theory%20of,given%20function%20space%20of%20interest.)
 13. [GAN hacks](https://github.com/soumith/ganhacks)
-14. [The Softmax function and it's derivative<sup>4</sup>](https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
-15. [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift<sup>5</sup>](https://arxiv.org/abs/1502.03167)
-
-*1. I could have watched 3b1b's deep learning videos, but I wanted to learn it without someone explaining it to me - this website was great!*
-
-*2. Introduced me to Hebbian learning - very interested in alternatives to backpropagation...*
-
-*3. Realized that forward mode differentiation is different from numerical/symbolic methods of computing derivatives - very elegant!*
-
-*4. The website didn't really go over how to actually compute the softmax gradient matrix - after some fiddling around, I figured it out. All we need to do is compute the outer product of softmax layer with itself, multiply by negative one, multiply trace of the square matrix by 2, take the sum of elements in each row. We end up with the derivative of the objective function w.r.t inputs of the softmax layer (a.k.a error in the softmax layer). Then you backpropagate the error as usual...*
-
-*5. Batch normalization is used to reduce internal covariate shift. Here too, I wasn't able to immediately understand how the backward pass worked. So after some more fiddling around, I figured it out. It's quite simple. During the forward pass, we subtract from the layer the layer mean and divide by it's standard deviation. Then we scale by factor gamma and shift by a factor beta and gamma and beta are parameters to be learnt.*
+14. [The Softmax function and it's derivative](https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
+15. [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/abs/1502.03167)
+16. [Batch Normalization Gradient Flow](http://cthorey.github.io./backpropagation/)
