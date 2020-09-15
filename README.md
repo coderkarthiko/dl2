@@ -53,16 +53,22 @@ CNN + MLP implementation using dl2 to train an MNIST classifier. Here, I compare
 ![](LeNet-5.jpg)
 
 # References
-1. [neuralnetworksanddeeplearning.com](neuralnetworksanddeeplearning.com)
-2. [MIT 6.S191: Introduction to Deep Learning](http://introtodeeplearning.com/)
+1. [neuralnetworksanddeeplearning.com<sup>1</sup>](neuralnetworksanddeeplearning.com)
+2. [MIT 6.S191: Introduction to Deep Learning<sup>2</sup>](http://introtodeeplearning.com/)
 3. [Stanford CS231n: Convolutional Neural Networks](http://cs231n.stanford.edu/)
 4. [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661)
-5. [DQN](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)
 6. [Why Momentum Really Works](https://distill.pub/2017/momentum/)
 7. [An Overview of Gradient Descent Optimizers](https://ruder.io/optimizing-gradient-descent/)
 8. [Understanding Convolutions](https://colah.github.io/posts/2014-07-Understanding-Convolutions/)
-9. [Calculus on Computational Graphs](https://colah.github.io/posts/2015-08-Backprop/)
-10. [Gradient-Based Learning Applied to Document Recognition (first use of CNNs for character recognition!)](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
+9. [Calculus on Computational Graphs<sup>3</sup>](https://colah.github.io/posts/2015-08-Backprop/)
+10. [Gradient-Based Learning Applied to Document Recognition](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
 11. [Automatic Reverse-Mode Differentiation](http://www.cs.cmu.edu/~wcohen/10-605/notes/autodiff.pdf)
 12. [Universal Approximation Theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem#:~:text=In%20the%20mathematical%20theory%20of,given%20function%20space%20of%20interest.)
 13. [GAN hacks](https://github.com/soumith/ganhacks)
+14. [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/abs/1502.03167)
+15. [The Softmax function and it's derivative<sup>4</sup>](https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
+
+*1* I could have watched 3b1b's deep learning videos, but I wanted to learn it without someone explaining it to me - this website was great!
+*2* Introduced me to Hebbian learning - very interested in alternatives to backpropagation...
+*3* Realized that forward mode differentiation is different from numerical/symbolic methods of computing derivatives - very elegant!
+*4* The website didn't really go over how to actually compute the softmax gradient matrix - all you need to do is compute the outer product of softmax layer with itself multiply by negative one, multiply trace of the square matrix by 2, take the sum of elements in each row and you end up with the derivative of the objective function w.r.t input of softmax layer (a.k.a error in the softmax layer). Then you backpropagate the error. Coding ML algorithms like backprop and GD is a much better way to understanding them rather than just looking at the math... 
