@@ -210,7 +210,7 @@ def poolforward(x, pool_size, strides, output_dim):
 
 
 # max pool backward pass
-@nb.jit(nopython=use_numba)
+# @nb.jit(nopython=use_numba)
 def poolbackward(error, amxs, pool_size, strides, output_dim):
     input_dim = np.shape(error)
     x_grad = np.zeros(output_dim)
@@ -493,12 +493,13 @@ class NN:
             
     # compute gradient of loss w.r.t output neurons
     def grad(self, y, loss_fn):
+        x = self.L[-1][0] if self.layers[-1]['layer'] == 'pool' else self.L[-1]
         if loss_fn == 'mse':
-            return (self.L[-1] - y) * df(self.L[-1], self.layers[-1]['activation'])
+            return (x - y) * df(x, self.layers[-1]['activation'])
         elif loss_fn == 'ce': 
             return x - y
         elif loss_fn == 'log': 
-            return y * df(self.L[-1], self.layers[-1]['activation']) / self.L[-1]
+            return y * df(x, self.layers[-1]['activation']) / x
         elif loss_fn == 'direct': 
             return y
         else: 
@@ -527,11 +528,13 @@ class NN:
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
             elif self.layers[i]['layer'] == 'dense':
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
                 self.L[i] = fcforward(self.W[i - 1], self.L[i - 1])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
             elif self.layers[i]['layer'] == 'expand':
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
                 self.L[i] = np.reshape(self.L[i - 1], self.layers[i]['output_dim'])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
@@ -543,8 +546,7 @@ class NN:
                 
             elif self.layers[i]['layer'] == 'conv2dT':
                 self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
-                self.L[i] = cnnTforward(self.L[i], self.W[i - 1], self.layers[i]['strides'], 
-                                        self.layers[i]['output_dim'], self.layers[i]['use_bias'])
+                self.L[i] = cnnTforward(self.L[i], self.W[i - 1], self.layers[i]['strides'], self.layers[i]['output_dim'])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
@@ -568,13 +570,14 @@ class NN:
                 dW.append(np.zeros(0))
                 error = poolbackward(error, self.L[i][1], self.layers[i]['pool_size'], 
                                      self.layers[i]['strides'], self.layers[i]['input_dim'])
-                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'flatten':            
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
                 dW.append(np.zeros(0))
                 error = np.reshape(error, self.layers[i]['input_dim'])
-                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'dense':
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
@@ -586,21 +589,24 @@ class NN:
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
                 dW.append(np.zeros(0))
                 error = error.ravel()
-                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'poolT':
                 dB.append(np.zeros(0))
                 dW.append(np.zeros(0))
                 error = poolTbackward(error, self.L[i], self.layers[i]['pool_size'], 
                                       self.layers[i]['strides'], self.layers[i]['input_dim'])
-                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'conv2dT':
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
                 filters_grad, error = cnnTbackward(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
                                                    self.W[i - 1], error, self.layers[i]['strides'], self.layers[i]['requires_wgrad'])
                 dW.append(filters_grad)
-                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
                 
         return np.flip(dW, 0), np.flip(dB, 0), error
     
@@ -612,7 +618,8 @@ class NN:
             LOSS, ERROR = np.zeros(np.shape(y)[1:]), np.zeros(np.shape(x)[1:])
             if shuffle: x, y = shuffle_data(x, y)
             for i in tqdm(range(n), disable=self.tqdm_disable):
-                prediction = self.forward(x[i])
+                prediction = self.forward(x[i])[0]
+                if self.layers[-1]['layer'] == 'pool': prediction = prediction[0]
                 error = self.grad(y[i], self.loss_fn)
                 dW, dB, error = self.backward(error) 
                 self.opt.dP[0] += dW
