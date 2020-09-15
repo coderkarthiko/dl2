@@ -363,7 +363,7 @@ class Adagrad(optimizer):
     def step(self):
         self.sP = [sP + dP ** 2 for sP, dP in zip(self.sP, self.dP)]
         dP = [self.lr * dP / (sP + self.epsilon) ** 0.5 for dP, sP in zip(self.dP, self.sP)]
-        for i in range(len(self.P)): self.P[i] -= dP[i].tolist()
+        for i in range(len(self.P)): self.P[i] -= dP[i]
         return self.P
     
     def reset(self):
