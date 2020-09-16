@@ -38,6 +38,8 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 # CYBENKO's-THEOREM-dl2.ipynb
 Neural nets are universal function approximators! In this notebook, I approximate a parabola.
 
+*Neural network approximating a spiral -*
+
 ![](classification.gif)
 
 # GATES-dl.ipynb - modelling logic gates using neural networks
