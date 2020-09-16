@@ -1,6 +1,7 @@
 import numpy as np
 import numba as nb
 from tqdm import tqdm
+from random import shuffle
 
 
 # accelerate using numba
@@ -34,8 +35,7 @@ def accuracy(model, x, y):
 
 # normalize data
 def normalize(x):
-    norm = np.linalg.norm(x)
-    return x if norm == 0 else x / norm
+    return (x - x.mean()) / x.std()
 
 
 # shuffle features and labels and retain pair-wise order
@@ -88,6 +88,11 @@ def poolT(pool_size, strides, input_dim=None):
 def conv2dT(channels, filters_dim, strides, activation='none', use_bias=True, input_dim=None, requires_wgrad=True):
     return {'input_dim': input_dim, 'output_dim': None, 'use_bias': use_bias, 'channels': channels, 'filters_dim': filters_dim, 
             'strides': strides, 'layer': 'conv2dT', 'activation': activation, 'requires_wgrad': requires_wgrad}
+
+
+# batch normalization
+def batchNorm(input_dim=None, activation='none', use_bias=True):
+    return {'input_dim': input_dim, 'output_dim': input_dim, 'use_bias': use_bias, 'layer': 'batchNorm', 'activation': 'none'}
 
 
 # activation functions
@@ -145,13 +150,13 @@ def loss(x, y, loss_fn):
 
         
 # fc layer forward pass
-# @nb.jit(nopython=use_numba)
+@nb.jit(nopython=use_numba)
 def fcforward(w, x):
     return np.dot(w, x)
 
 
 # fc layer backward pass
-# @nb.jit(nopython=use_numba)
+@nb.jit(nopython=use_numba)
 def fcbackward(error, w, x, requires_wgrad=True):
     grad = np.outer(error, x) if requires_wgrad else np.zeros(np.shape(w))
     return grad, np.dot(np.transpose(w), error)
@@ -160,7 +165,7 @@ def fcbackward(error, w, x, requires_wgrad=True):
 # convolution layer forward pass
 @nb.jit(nopython=use_numba)
 def cnnforward(x, filters, strides, output_dim):
-    filters_dim, output_dim = np.shape(filters), np.shape(bias)
+    filters_dim = np.shape(filters)
     z = np.zeros(output_dim)
     for i in range(output_dim[0]):
         r_, _r = strides[0] * i, strides[0] * i + filters_dim[1]
@@ -209,7 +214,7 @@ def poolforward(x, pool_size, strides, output_dim):
 
 
 # max pool backward pass
-# @nb.jit(nopython=use_numba)
+@nb.jit(nopython=use_numba)
 def poolbackward(error, amxs, pool_size, strides, output_dim):
     input_dim = np.shape(error)
     x_grad = np.zeros(output_dim)
@@ -283,6 +288,22 @@ def cnnTbackward(x, filters, error, strides, requires_wgrad=True):
                 for k in range(filters_dim[0]):
                     filters_grad[k] += error[r_:_r, c_:_c] * x[i, j, k]
     return filters_grad, x_grad
+
+
+# batch normalization forward pass
+@nb.jit(nopython=use_numba)
+def BNforward(x, epsilon=1e-5):
+    num = x - np.mean(x)
+    return num / np.sum(num ** 2 + epsilon) ** 0.5
+    
+
+# batch normalization backward pass
+@nb.jit(nopython=use_numba)
+def BNbackward(x, error, epsilon=1e-5):
+    N = len(x)
+    num = x - np.mean(x)
+    var = (1 / N) * num ** 2 + epsilon
+    return (var ** 0.5 * (N * error - np.sum(error, axis=0) - num * np.sum(error * num) / var)) / N
     
 
 # optimizer class
@@ -296,8 +317,8 @@ class optimizer:
         return [np.array([np.zeros(np.shape(P)) for P in parameter]) for parameter in self.P]
         
         
-# SGD with momentum - https://distill.pub/2017/momentum/
-class SGD(optimizer):
+# Momentum - https://distill.pub/2017/momentum/
+class GD(optimizer):
     def __init__(self, parameters, lr=1e-1, beta=0.9):
         super().__init__(parameters, lr)
         self.beta = beta
@@ -362,7 +383,7 @@ class Adagrad(optimizer):
     def step(self):
         self.sP = [sP + dP ** 2 for sP, dP in zip(self.sP, self.dP)]
         dP = [self.lr * dP / (sP + self.epsilon) ** 0.5 for dP, sP in zip(self.dP, self.sP)]
-        for i in range(len(self.P)): self.P[i] -= dP[i]
+        for i in range(len(self.P)): self.P[i] -= dP[i].tolist()
         return self.P
     
     def reset(self):
@@ -371,18 +392,22 @@ class Adagrad(optimizer):
         
 ## The neural net class
 class NN:
+    
     # initialize model
     def __init__(self, *layers):
         self.n, self.trainable_params = 0, 0
         self.opt, self.loss_fn = None, None
         self.store_gradients, self.tqdm_disable = False, False
         self.layers = []
-        self.dW, self.dB = [], []
-        self.losses, self.errors = [], []
+        self.losses, self.errors, self.dW, self.dB = [], [], [], []
         self.W, self.B, self.L = [], [], []
         if layers:
             self.layers += list(layers)
             self.n = len(self.layers)
+    
+    # clear history
+    def clear_history(self):
+        self.losses, self.errors, self.dW, self.dB = [], [], [], []
         
     # add layers     
     def add(self, layer):
@@ -396,6 +421,7 @@ class NN:
         self.layers = [inp()] + self.layers 
         
         for i in range(1, self.n + 1):
+            
             if self.layers[i]['layer'] == 'conv2d': # convolution
                 input_dim, filters = self.layers[i]['input_dim'], self.layers[i]['filters']
                 filters_dim, strides = self.layers[i]['filters_dim'], self.layers[i]['strides']
@@ -407,6 +433,9 @@ class NN:
                 self.B.append(np.random.normal(0, (6 / (output_dim[0] * output_dim[1] * output_dim[2])) ** 0.5, output_dim) 
                               if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
+                w_params = filters_dim[0] * filters_dim[1] * input_dim[2] * filters
+                b_params = self.layers[i]['use_bias'] * output_dim[0] * output_dim[1] * output_dim[2]
+                self.trainable_params += w_params + b_params
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
                 
             elif self.layers[i]['layer'] == 'pool': # max pool 
@@ -428,7 +457,7 @@ class NN:
                 self.W.append(np.zeros(0))
                 self.B.append(np.random.uniform(-bound, bound, output_dim) if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
-                self.trainable_params += output_dim
+                self.trainable_params += self.layers[i]['use_bias'] * output_dim
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
             
             elif self.layers[i]['layer'] == 'dense': # fc-layer
@@ -437,7 +466,7 @@ class NN:
                 self.W.append(np.random.uniform(-boundW, boundW, (output_dim, input_dim)))
                 self.B.append(np.random.uniform(-boundB, boundB, output_dim) if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
-                self.trainable_params += output_dim
+                self.trainable_params += output_dim * input_dim + self.layers[i]['use_bias'] * output_dim
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
             
             elif self.layers[i]['layer'] == 'expand': # expand
@@ -446,6 +475,7 @@ class NN:
                 self.B.append(np.random.normal(0, (6 / (output_dim[0] * output_dim[1] * output_dim[2])) ** 0.5, output_dim) 
                               if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
+                self.trainable_params += self.layers[i]['use_bias'] * output_dim[0] * output_dim[1] * output_dim[2]
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
             
             elif self.layers[i]['layer'] == 'poolT': # transpose max pool
@@ -466,11 +496,28 @@ class NN:
                 output_dim = ((input_dim[0] - 1) * strides[0] + filters_dim[0], 
                               (input_dim[1] - 1) * strides[1] + filters_dim[1], channels)
                 self.layers[i]['output_dim'] = output_dim
-                self.W.append(np.random.normal(0, (6 / (filters_dim[0] * filters_dim[1] * channels)) ** 0.5, 
+                self.W.append(np.random.normal(0, (6 / (input_dim[2] * filters_dim[0] * filters_dim[1] * channels)) ** 0.5, 
                                                (input_dim[2], filters_dim[0], filters_dim[1], channels)))
                 self.B.append(np.random.normal(0, (6 / (output_dim[0] * output_dim[1] * channels)) ** 0.5, output_dim) 
                               if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
+                w_params = input_dim[2] * filters_dim[0] * filters_dim[1] * channels 
+                b_params = self.layers[i]['use_bias'] * output_dim[0] * output_dim[1] * channels
+                self.trainable_params += w_params + b_params
+                if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
+                    
+            elif self.layers[i]['layer'] == 'batchNorm':
+                input_dim = self.layers[i]['input_dim']
+                self.layers[i]['output_dim'] = input_dim
+                output_dim = self.layers[i]['output_dim']
+                n = 1 if type(output_dim) is tuple else output_dim
+                if type(output_dim) is tuple:
+                    for dim in output_dim: n *= dim 
+                bound = (6 / n) ** 0.5
+                self.W.append(np.random.uniform(-bound, bound, output_dim))
+                self.B.append(np.random.uniform(-bound, bound, output_dim) if self.layers[i]['use_bias'] else np.zeros(0))
+                self.L.append(np.zeros(output_dim))
+                self.trainable_params += n + self.layers[i]['use_bias'] * n
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
            
             else:
@@ -478,17 +525,6 @@ class NN:
                 
         self.W, self.B, self.L = np.array(self.W), np.array(self.B), np.array(self.L)
         self.n += 1
-        
-        # count number of trainable parameters
-        self.trainable_params = 0
-        for W in self.W:
-            n = 1
-            for dim in np.shape(W): n *= dim
-            self.trainable_params += n
-        for B in self.B:
-            n = 1
-            for dim in np.shape(B): n *= dim
-            self.trainable_params += n 
             
     # compute gradient of loss w.r.t output neurons
     def grad(self, y, loss_fn):
@@ -546,6 +582,12 @@ class NN:
             elif self.layers[i]['layer'] == 'conv2dT':
                 self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
                 self.L[i] = cnnTforward(self.L[i], self.W[i - 1], self.layers[i]['strides'], self.layers[i]['output_dim'])
+                if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
+                self.L[i] = f(self.L[i], self.layers[i]['activation'])
+                
+            elif self.layers[i]['layer'] == 'batchNorm':
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.W[i - 1] * BNforward(self.L[i])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
@@ -607,6 +649,12 @@ class NN:
                 error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
                             self.layers[i - 1]['activation'])
                 
+            elif self.layers[i]['layer'] == 'batchNorm':
+                dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
+                dW.append(error * self.L[i])
+                error = self.W[i - 1] * BNbackward(self.L[i], error)
+                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                
         return np.flip(dW, 0), np.flip(dB, 0), error
     
     def fit(self, x, y, epochs, batch_size=1, shuffle=False):
@@ -639,8 +687,10 @@ class NN:
             self.errors.append(ERROR / n)
         return {'losses': self.losses, 'errors': self.errors}
             
+    # return parameters of model
     def params(self): return [self.W, self.B]
     
+    # return layer types and # trainable parameters
     def info(self):
         for layer in self.layers[1:]:
             print(layer)
