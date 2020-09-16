@@ -4,10 +4,12 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](backpropagation.png)
 
 # dl2.py - an even better neural network library
-dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It uses Numba to accelerate NumPy computations but even with fewer parameters than MLPs, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs (Multi-Layer Perceptrons) but also supports backpropagation through convolution, transpose convolution, sub-sampling and super-sampling layers (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy (which is what my library does). dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph (DCG)). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). Libraries like TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
+dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It uses Numba to accelerate NumPy computations but even with fewer parameters than MLPs, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs (Multi-Layer Perceptrons) but also supports backpropagation through convolution, transpose convolution, sub-sampling and super-sampling layers (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy (which is what my library does). dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). 
 
-#### Challenges:
-1. I had to learn some linear algebra and multi-variable calculus in order to understand backpropagation and gradient descent. I understood gradient descent for single variable functions but I didn't understand how it applied to multi-variate functions much later. Most of ML is the idea of stepping in the direction of steepest descent (i.e stepping in the direction opposite to the gradient) over and over again until we reach a good minima of an objective function - optimization on steroids!
+  TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph (DCG)). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). Libraries like TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
+
+#### Challenges and insights:
+1. I had to learn multi-variable calculus and some linear algebra in order to understand backpropagation and gradient descent. I understood gradient descent for single variable functions but I didn't understand how it applied to multi-variate functions until much later. Most of ML - the idea of stepping in the direction of steepest descent (i.e stepping in the direction opposite to the gradient) over and over again until we reach a good minima of an objective function - in other words, gradient based optimization!
 
 2. The second insight I had was when I was trying to figure out backpropagation through convolution, transpose convolution, pooling and transpose pooling layers. It is computational similiar to the forward pass. We only need to adjust the expressions in the inner most for loop of the convolution/pooling operation! 
 
@@ -15,11 +17,11 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](cnnforward.png)
 
-3. The third insight I had was that CNNs are simply sparsely connected multilayer perceptrons. It seems obvious in hindsight but it didn't click for me until I saw the image below (from Chris Olah's [blog](https://colah.github.io/posts/2014-07-Conv-Nets-Modular/)).
+3. The third insight I had when I was trying to figure out backprop in CNNs was that CNNs are simply sparsely connected multilayer perceptrons. It seems obvious in hindsight but it didn't fully click for me until I saw the image below (from Chris Olah's [blog](https://colah.github.io/posts/2014-07-Conv-Nets-Modular/)).
 
 *Convolution weights structure -*
 
-![]()
+![](conv_forward.png)
 
 4. Implementing the optimizers - I really wanted to understand how different gradient descent optimizers affected performance and accuracy. In TensorFlow, we can simply do opt = optimizers.Adam(...) and in my library I did it a bit differently - each optimizer is a class and we store the gradient and the updated parameters. Calling the step() method updates the parameters (which is done differently for every optimizer) and returns them. We store the parameters as a list or NumPy array - for a neural network, the parameters that we pass into the optimizer are the weights and biases of the network. We can use the optimizer class to learn any set of parameters of arbitrary shape. The parameters have to be NumPy arrays.  
 
@@ -29,7 +31,7 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](bncircuit.png)
 
-Gradient of loss function w.r.t to inputs of batch-norm layer -
+*Gradient of loss function w.r.t to inputs of batch-norm layer derivation -*
 
 ![](bnorm_grad.png)
 
