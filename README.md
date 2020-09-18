@@ -95,6 +95,7 @@ LeNet-5 trained on cifar10. cifar10 is a harder than MNIST (RGB instead of grays
 #### The LeNet-5 CNN architecture -
 
 ![](LeNet-5.jpg)
+![](LeNet5dl2.png)
 
 # References
 1. [neuralnetworksanddeeplearning.com](neuralnetworksanddeeplearning.com)
