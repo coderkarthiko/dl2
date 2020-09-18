@@ -96,7 +96,8 @@ LeNet-5 trained on the cifar10 dataset. cifar10 is a harder than MNIST (RGB inst
 #### Some images from the cifar10 -
 ![](cifar10.png)
 
-#### Loss landscape of ResNet-10 trained on cifar10
+#### Loss landscape of ResNet-10 trained on cifar10 -
+![](llscp.png)
 
 # References
 1. [neuralnetworksanddeeplearning.com](neuralnetworksanddeeplearning.com)
