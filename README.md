@@ -8,16 +8,16 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
   TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph (DCG)). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). Libraries like TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
 
-#### What I learnt -
-1. I had to learn multi-variable calculus and some linear algebra in order to understand backpropagation and gradient descent. I understood gradient descent for single variable functions but I didn't understand how it applied to multi-variate functions until much later. Most of ML is convex optimization :')...
+#### What I learnt and noticed -
+1. As part of this project I learnt multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...Personally, the fact that "learning" <=> optimizing an objective function <- I find it really elegant :')...
 
-2. The second insight I had was when I was trying to figure out backpropagation through convolution, transpose convolution, pooling and transpose pooling layers. It is computationally similiar to the forward pass. We only need to adjust the expressions in the inner most for loop of the convolution/pooling operation! 
+2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this...
 
 *Convolution operation -*
 
 ![](cnnforward.png)
 
-3. The third insight I had when I was trying to figure out backprop in CNNs was that CNNs are simply sparsely connected multilayer perceptrons. It seems obvious in hindsight but it didn't fully click for me until I saw the image below (from Chris Olah's [blog](https://colah.github.io/posts/2014-07-Conv-Nets-Modular/)).
+3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode.
 
 *Convolution weights structure -*
 
@@ -54,9 +54,9 @@ In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer
 # UAT-dl2.ipynb
 Neural nets are universal function approximators! In this notebook, I approximate a parabola.
 
-#### Neural network approximating a spiral -
+#### Universal Approximation Theorem (from Wikipedia) -
 
-![](classification.gif)
+![](uat.png)
 
 # GATES-dl.ipynb - modelling logic gates using neural networks
 A classic problem in machine learning is using a neural network to model XOR. XOR is not a linearly separable function - and neural networks are good at approximating non-linear transformations. Logic gates have binary inputs but neural networks can have real inputs. So not only can we input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - say, 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. In the plots, we can clearly see boundaries (black -> yellow) where the output jumps from 1 to 0 and 0 to 1.
