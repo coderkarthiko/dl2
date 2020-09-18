@@ -41,14 +41,16 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer is a class and we store the gradient and the updated parameters. Calling the step() method updates the parameters (which is done differently for every optimizer) and returns them. For a neural network, the parameters that we pass into the optimizer are the weights and biases of the network. We can use the optimizer class to learn any set of parameters (of arbitrary shape). The parameters have to be NumPy arrays. 
 
-*Below, we have a function of the form f(x) = N1(p(x) + **w**N2(x)) where p is a polynomial and N1 and N2 are neural networks - we compute the gradient w.r.t to all the parameters of f to train f...*
+*Below, we have a function of the form f(x) = N1(p(x) + **w**N2(x)) where p is a polynomial and N1 and N2 are neural networks and **w** is parameter - we compute the gradient w.r.t to all the parameters of f to train f...*
 
 ![](gd.png)
 
 # UAT-dl2.ipynb
 Neural nets are universal function approximators! In this notebook, I approximate a parabola.
 
-#### Universal Approximation Theorem (from Wikipedia) -
+![]()
+
+#### Universal Approximation Theorem -
 
 ![](uat.png)
 
@@ -72,21 +74,21 @@ My implementation of a GAN trained using TensorFlow and the MNIST data set.
 ![](tfgan.gif)
 
 # GAT-dl2.ipynb
-My implementation of the GAN training algorithm using dl2. I only implement it for a single image from the MNIST data set. Training GANs is pretty hard and my library isn't nearly as optimized and performant as TensorFlow or Pytorch. 
+My implementation of the GAN training algorithm using dl2. I only implement it for a single image from the MNIST data set. Training GANs is pretty hard. 
 
 #### The GAN training algorithm from the original paper -
 
 ![](gan.png)
 
 # CNN-MLP-benchmarks-dl2.ipynb
-Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the accuracy of various gradient descent optimizers on MLPs and CNNs.
+Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the accuracy of various gradient descent optimizers for MLPs and CNNs.
 
 #### Different optimizers reach a local minima at different rates -
 
 ![](optims.gif)
 
 # LENET5-cifar10-dl2.ipynb
-LeNet-5 trained on the cifar10 dataset. cifar10 is a harder than MNIST (RGB instead of grayscale images and more variation). There are 10 classes and 60000 32x32x3 RGB images. I got a classification accuracy of about 60% after an hour and a half of training. We can get significantly better results using TensorFlow (94% accuracy in 2 minutes is possible with Google Colab’s TPUv2). I thought cifar10 was a toy dataset when I first learnt about it. Turned out I was wrong :')...getting 94+% accuracy (94% is the human benchmark) is VERY hard.
+LeNet-5 trained on the cifar10 dataset. cifar10 is a harder than MNIST (RGB instead of grayscale images and more variation). There are 10 classes and 60000 32x32x3 RGB images. I got a classification accuracy of about 60% after an hour and a half of training. We can get significantly better results using TensorFlow (94% accuracy in 2 minutes is possible with Google Colab’s TPUv2). I thought cifar10 was a toy dataset when I first learnt about it. Turned out I was wrong :')...getting 94+% accuracy (94% is the human benchmark) is VERY hard. 
 
 #### The LeNet-5 CNN architecture -
 
