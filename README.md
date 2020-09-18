@@ -52,8 +52,6 @@ NNs are universal function approximators.
 
 ![](uat.png)
 
-Approximation of the f(x) = x^2 + x - sqrt(x) -
-
 ![](approx.png)
 
 # GATES-dl.ipynb - modelling logic gates using neural networks
