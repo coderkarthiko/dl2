@@ -13,19 +13,13 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this...
 
-*Convolution operation -*
-
 ![](cnnforward.png)
 
-3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode.
-
-*Convolution weights structure -*
+3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. Image below from Chris Olah's blog.
 
 ![](conv_forward.png)
 
-4. Implementing batch normalization - I understood how the forward pass worked (you normalize, scale and then shift) but I only later understood the derivation of the backward pass after working out the gradient for small layers and going through some blogposts. 
-
-*Batch normalization computational graph -*
+4. Implementing batch normalization - I understood how the forward pass worked (you normalize, scale and then shift) but I only later understood the derivation of the backward pass after working out the gradient for small layers and going through some blogposts. Below is the batch-norm computational graph. 
 
 ![](bncircuit.png)
 
