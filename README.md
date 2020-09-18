@@ -1,5 +1,5 @@
 # Neural networks = AWESOME!
-I first got into AI when I saw Nvidia's GauGAN video - an AI that changes rough sketches to realistic landscapes. Then I saw Google DeepMind's RL agent learn to play Atari Breakout and I was hooked! I learnt as much as I can about neural nets and all the cool stuff we can do with them. I learnt all the math behind some really important ML algorithms and I implemented my own neural network library (which is the main thing about this project). 
+I first got into AI when I saw Nvidia's GauGAN video - an AI that changes rough sketches to realistic landscapes. Then I saw Google DeepMind's RL agent learn to play Atari Breakout and I was hooked! I learnt as much as I can about neural nets and all the cool stuff we can do with them. I learnt all the math behind some really important ML algorithms and I implemented my own neural network library (which is the main part of this project). I finished MIT 6.S191 online lecture series (Introduction to Deep Learning). Then I started watching Stanford CS231N (Convolutional Neural Networks) lectures on YouTube and I added notebooks to the repository as I went through the lectures. 
 
 #### GauGAN example -
 ![](gaugan.jpg)
