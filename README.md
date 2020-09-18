@@ -14,18 +14,16 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](backpropagation.png)
 
 # dl2.py - an even better neural network library
-dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers. It uses Numba to accelerate NumPy computations but even with fewer parameters than MLPs, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs (Multi-Layer Perceptrons) but also supports backpropagation through convolution, transpose convolution, sub-sampling and super-sampling layers (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy (which is what my library does). dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). 
-
-  TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph - DCG). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically in dl2 by calling the NN.backward() method - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
+dl2.py is a much better version of dl.py. It's a neural network library which supports multi-layer perceptrons (the vanilla neural networks), convolutional neural networks (neural nets used for visual processing) and gradient descent optimizers. I've implemented all matrix operations (forward and backward pass in a neural net) using NumPy. We can implement almost any ML algorithm using dl2.py. 
 
 #### Things I've learnt and challenges I faced -
-1. In order to understand neural networks I had to learn multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...personally, the fact that "learning" <=> optimizing an objective function <- I find it really elegant :'). At first, my library did not have any optimizers, did not support convolutional neural networks (neural nets used to do ML stuff with images) and did not even support loss functions other than mean-squared error loss. It was initially about 60 lines of code. As I learnt more and more about neural nets over the course of a 2-3 months, I've added and tweaked so many things. The library is around 650 lines of code and it can be used to implement the same algorithms that I found magical and hard-to understand earlier. 
+1. In order to understand neural networks I had to learn multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...I realized that "learning" in "machine learning" simply reduces to optimizing an objective function! At first, my library did not have any optimizers, did not support convolutional neural networks and did not even support loss functions other than mean-squared error loss. It was initially about 60 lines of code. As I learnt more and more about neural nets over the course of a 2-3 months, I've added and tweaked so many things. Now, the library is around 650 lines of code and it can be used to implement the same algorithms that I found magical and hard-to understand earlier. For example, Google DeepMind released a video of how their machine learning algorithm figured out a neat little trick to finish the Atari game Breakout - I found it so fascinating. Using dl2, it's quite easy to implement an array of machine learning algorithms.
 
-2. Backpropagation through up-sampling and transpose convolution layers is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this. I noticed this after implemented transpose convolution functions in a jupyter notebook and tried out a few variants untill I landed upon one that seemed to actually work. Both convolution and tranpose convolution operations made training really slow. Then I discovered Numba - a library that accelerated NumPy computations. It improved the speed of training neural nets by an order of magnitude! I then implemented LeNet5 (one of the first neural nets used for handwritten character recognition) to classify images from the cifar10 dataset (see last section). 
-
+2. My library was very slow. I wanted to see how well it performed at classifying images in the cifar10 dataset (a dataset of 60000 images) but it was VERY slow. Then I discovered Numba - a library that accelerated NumPy computations. It improved the speed of training neural nets by an order of magnitude! I then implemented LeNet5 (one of the first neural nets used for handwritten character recognition) to classify images from the cifar10 dataset (see last section) and it achieved an accuracy of 60 %. 
+ 
 ![](cnnforward.png)
 
-3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. 
+3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. Once I understoof how CNNs worked, I benchmarked the performace of the same CNN architecture with different optimizers (see CNN-MLP-benchmarks-dl2.ipynb).
 
 ![](conv_forward.png)
 
@@ -35,7 +33,9 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](bnorm_grad.png)
 
-# demo.ipynb - how to use dl2
+5. Understanding how GANs worked - GANs are probably one of the coolest machine learning models. They are the same neural net architectures used to make deepfakes and human-like faces. I've implemented a GAN using TensorFlow (see GATtf.ipynb) and implemented the training process of a GAN using dl2 (see GAT-dl2.ipynb).
+
+# demo.ipynb - how dl2 works
 
 #### Linear regression using dl2 -
 
