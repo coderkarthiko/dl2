@@ -7,11 +7,14 @@ dl is a small library I made to understand how neural networks and gradient desc
 dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It uses Numba to accelerate NumPy computations but even with fewer parameters than MLPs, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs (Multi-Layer Perceptrons) but also supports backpropagation through convolution, transpose convolution, sub-sampling and super-sampling layers (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy (which is what my library does). dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). 
 
   TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph (DCG)). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). Libraries like TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
+  
+### demo.ipynb
+All the stuff we can do with dl2 -
 
 #### Challenges and insights:
 1. I had to learn multi-variable calculus and some linear algebra in order to understand backpropagation and gradient descent. I understood gradient descent for single variable functions but I didn't understand how it applied to multi-variate functions until much later. Most of ML - the idea of stepping in the direction of steepest descent (i.e stepping in the direction opposite to the gradient) over and over again until we reach a good minima of an objective function - in other words, gradient based optimization!
 
-2. The second insight I had was when I was trying to figure out backpropagation through convolution, transpose convolution, pooling and transpose pooling layers. It is computational similiar to the forward pass. We only need to adjust the expressions in the inner most for loop of the convolution/pooling operation! 
+2. The second insight I had was when I was trying to figure out backpropagation through convolution, transpose convolution, pooling and transpose pooling layers. It is computationally similiar to the forward pass. We only need to adjust the expressions in the inner most for loop of the convolution/pooling operation! 
 
 *Convolution operation -*
 
