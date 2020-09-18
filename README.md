@@ -6,9 +6,9 @@ dl is a small library I made to understand how neural networks and gradient desc
 # dl2.py - an even better neural network library
 dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sampling layers with a Keras-like API. It uses Numba to accelerate NumPy computations but even with fewer parameters than MLPs, CNNs seem to perform slower as the convolution operation is not optimized. dl2 uses the standard backpropagation algorithm for MLPs (Multi-Layer Perceptrons) but also supports backpropagation through convolution, transpose convolution, sub-sampling and super-sampling layers (can be used for making GANs and auto-encoders!). For the same neural net architecture, TensorFlow and PyTorch still seem to beat neural net operations written in pure NumPy (which is what my library does). dl2 uses XAVIER initialization and supports most GD optimizers (we can add more if we want). 
 
-  TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph (DCG)). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). Libraries like TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
+  TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph - DCG). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). Libraries like TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
 
-#### What I learnt and noticed -
+#### Things I've learnt -
 1. As part of this project I learnt multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...personally, the fact that "learning" <=> optimizing an objective function <- I find it really elegant :')...
 
 2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this...
@@ -23,8 +23,6 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](bncircuit.png)
 
-*Gradient of loss function w.r.t to inputs of batch-norm layer derivation -*
-
 ![](bnorm_grad.png)
 
 # demo.ipynb - how dl2 works
@@ -37,16 +35,18 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](logregress.png)
 
+#### Polynomial regression using dl2 - 
+![]
+
 #### Implementing gradient descent optimizers using dl2 -
 
 In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer is a class and we store the gradient and the updated parameters. Calling the step() method updates the parameters (which is done differently for every optimizer) and returns them. For a neural network, the parameters that we pass into the optimizer are the weights and biases of the network. We can use the optimizer class to learn any set of parameters (of arbitrary shape). The parameters have to be NumPy arrays. 
 
-*Below, we have a function of the form f(x) = N1(p(x) + **w**N2(x)) where p is a polynomial and N1 and N2 are neural networks and **w** is parameter - we compute the gradient w.r.t to all the parameters of f to train f...*
+*Below, we have a function of the form f(x) = N1(p(x) + **w**N2(x)) where p is a polynomial and N1 and N2 are neural networks and **w** is parameter - we compute the gradient of the loss function w.r.t to all the parameters of f do gradient descent...*
 
 ![](gd.png)
 
 # UAT-dl2.ipynb
-Neural nets are universal function approximators! In this notebook, I approximate a parabola.
 
 ![]()
 
@@ -74,21 +74,21 @@ My implementation of a GAN trained using TensorFlow and the MNIST data set.
 ![](tfgan.gif)
 
 # GAT-dl2.ipynb
-My implementation of the GAN training algorithm using dl2. I only implement it for a single image from the MNIST data set. Training GANs is pretty hard. 
+My implementation of the GAN training algorithm using dl2. 
 
 #### The GAN training algorithm from the original paper -
 
 ![](gan.png)
 
 # CNN-MLP-benchmarks-dl2.ipynb
-Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the accuracy of various gradient descent optimizers for MLPs and CNNs.
+Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the accuracies of various gradient descent optimizers (SGD, Momentum, RMSprop, Adam and Adagrad).
 
 #### Different optimizers reach a local minima at different rates -
 
 ![](optims.gif)
 
 # LENET5-cifar10-dl2.ipynb
-LeNet-5 trained on the cifar10 dataset. cifar10 is a harder than MNIST (RGB instead of grayscale images and more variation). There are 10 classes and 60000 32x32x3 RGB images. I got a classification accuracy of about 60% after an hour and a half of training. We can get significantly better results using TensorFlow (94% accuracy in 2 minutes is possible with Google Colab’s TPUv2). I thought cifar10 was a toy dataset when I first learnt about it. Turned out I was wrong :')...getting 94+% accuracy (94% is the human benchmark) is VERY hard. 
+LeNet-5 trained on the cifar10 dataset. There are 10 classes and 60000 32x32x3 RGB images. I got a classification accuracy of about 60% after an hour and a half of training. We can get significantly better results using TensorFlow (94% accuracy in 2 minutes is possible with Google Colab’s TPUv2). 
 
 #### The LeNet-5 CNN architecture -
 
