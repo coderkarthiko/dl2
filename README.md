@@ -48,7 +48,7 @@ In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer
 
 # UAT-dl2.ipynb
 
-![]()
+![](approx.png)
 
 #### Universal Approximation Theorem -
 
