@@ -25,7 +25,7 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 ![](bnorm_grad.png)
 
-# demo.ipynb - how dl2 works
+# demo.ipynb - how to use dl2
 
 #### Linear regression using dl2 -
 
@@ -36,7 +36,7 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 ![](logregress.png)
 
 #### Polynomial regression using dl2 - 
-![]
+![](polregress.png)
 
 #### Implementing gradient descent optimizers using dl2 -
 
