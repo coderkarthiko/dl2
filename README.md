@@ -86,12 +86,17 @@ Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the a
 ![](optims.gif)
 
 # LENET5-cifar10-dl2.ipynb
-LeNet-5 trained on cifar10. cifar10 is a harder than MNIST (RGB instead of grayscale images and more variation). 
+LeNet-5 trained on the cifar10 dataset. cifar10 is a harder than MNIST (RGB instead of grayscale images and more variation). There are 10 classes and 60000 32x32x3 RGB images. I got a classification accuracy of about 60% after an hour and a half of training. We can get significantly better results using TensorFlow (94% accuracy in 2 minutes is possible with Google Colab’s TPUv2). I thought cifar10 was a toy dataset when I first learnt about it. Turned out I was wrong :')...getting 94+% accuracy (94% is the human benchmark) is VERY hard.
 
 #### The LeNet-5 CNN architecture -
 
 ![](LeNet-5.jpg)
 ![](LeNet5dl2.png)
+
+#### Some images from the cifar10 -
+![](cifar10.png)
+
+#### Loss landscape of ResNet-10 trained on cifar10
 
 # References
 1. [neuralnetworksanddeeplearning.com](neuralnetworksanddeeplearning.com)
