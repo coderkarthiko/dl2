@@ -1,11 +1,12 @@
-# Neural networks = AWESOME!
-I first got into AI when I saw Nvidia's GauGAN video - an AI that changes rough sketches to realistic landscapes. Then I saw Google DeepMind's RL agent learn to play Atari Breakout and I was hooked! I learnt as much as I can about neural nets and all the cool stuff we can do with them. I learnt all the math behind some really important ML algorithms and I implemented my own neural network library (which is the main part of this project). I finished MIT 6.S191 online lecture series (Introduction to Deep Learning). Then I started watching Stanford CS231N (Convolutional Neural Networks) lectures on YouTube and I added notebooks to the repository as I went through the lectures. 
+GITHUB LINK - https://github.com/coderkarthiko/ml-project/edit/master
 
-#### GauGAN example -
-![](gaugan.jpg)
+# tl;dr
 
-#### Google DeepMind's Atari agent playing Breakout - 
-![](atari.gif)
+#### What - 
+This project is basically a machine learning library I built (dl2.py, see below) and a demonstration of its capabilities. I have implemented important machine learning algorithms like backpropagation, gradient descent, multi-layer perceptrons and convolutional neural networks (CNNs) and generative adversarial networks (GANs) using my library. 
+
+#### Why - 
+TensorFlow and PyTorch (developed by Google and Facebook respectively) are widely used machine learning libraries. One doesn't even need to fully understand how neural networks work in order to use TensorFlow or Pytorch (they abstract away most of the workings of neural nets and still allow one to make some really cool things). But I didn't like how it abstracted away the nitty-gritty details of training neural networks. I wanted to REALLY understand how they worked. I wanted to understand the math and the techniques utilized to train neural networks. The best way to understand something is to create it - so I built a neural network library using NumPy in Python. It's not at all as efficient as the libraries I've mentioned before but it gets the job done. This is the project I did after I finished finishing MIT 6.S191 (Introduction to Deep Learning) online lecture series. 
 
 # dl.py - a small neural network library
 dl is a small library I made to understand how neural networks and gradient descent optimizers work. It's quite simple and doesn't support CNNs. I have implemented the standard backpropagation algorithm (shown below). Gradient descent optimizers like SGD, Momentum, Adam, RMSprop and Adagrad can be used for training. 
@@ -17,18 +18,18 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
   TensorFlow and Pytorch utilize reverse-mode differentiation in arbitrary DAGs (a DAG is created during the forward pass and the operations are kept track of - such a DAG is called as a Dynamic Computational Graph - DCG). We can make arbitrary DAGs in dl2 by using multiple neural networks, custom loss functions and custom backpropagation (i.e, backpropagation for individual neural network is done automatically in dl2 by calling the NN.backward() method - but we need to pass the gradient between various neural networks manually - GAT-dl2.ipynb is an example). TensorFlow and Pytorch make it very easy to implement neural networks and related algorithms. They let us treat neural networks as black boxes. However, in order to fully understand the limitations and ways to improve performance of neural net architectures or algorithms, I felt I had to implement them myself. I realized how challenging it can be to train neural nets!
 
-#### Things I've learnt -
-1. As part of this project I learnt multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...personally, the fact that "learning" <=> optimizing an objective function <- I find it really elegant :')...
+#### Things I've learnt and challenges I faced -
+1. In order to understand neural networks I had to learn multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...personally, the fact that "learning" <=> optimizing an objective function <- I find it really elegant :'). At first, my library did not have any optimizers, did not support convolutional neural networks (neural nets used to do ML stuff with images) and did not even support loss functions other than mean-squared error loss. It was initially about 60 lines of code. Now, as I learnt more and more about neural nets over the past 3-4 months, I've added and tweaked so many things. The library is around 650 lines of code and it can be used to implement the same algorithms that I found magical and hard-to understand earlier. 
 
-2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this.
+2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this. I noticed this after implemented transpose convolution functions in a jupyter notebook and tried out a few variants untill I landed upon one that seemed to actually work. Both convolution and tranpose convolution operations made training really slow. Then I discovered Numba - a library that accelerated NumPy computations. It improved the speed of training neural nets by an order of magnitude! I then implemented LeNet5 (one of the first neural nets used for handwritten character recognition) to classify images from the cifar10 dataset (see last section). 
 
 ![](cnnforward.png)
 
-3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. Image below from Chris Olah's blog.
+3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. 
 
 ![](conv_forward.png)
 
-4. Implementing batch normalization - I understood how the forward pass worked (you normalize, scale and then shift) but I only later understood the derivation of the backward pass after working out the gradient for small layers and going through some blogposts. Below is the batch-norm computational graph. 
+4. Implementing batch normalization - I understood how the forward pass worked (you normalize, scale and then shift) but I only later understood the derivation of the backward pass after working out the gradient for small layers and going through some blogposts. Below is the batch-norm computational graph. It's very easy to add whatever layers (like batch-norm) we want using ML libraries and make all kinds of neural net architectures. Somehow, these libraries seemed to magically compute gradients and we arrive at the perfect model for our training data. I really wanted to understand how they did it so effectively and I ended up implementing it myself. 
 
 ![](bncircuit.png)
 
