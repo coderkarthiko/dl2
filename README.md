@@ -42,7 +42,7 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 
 In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer is a class and we store the gradient and the updated parameters. Calling the step() method updates the parameters (which is done differently for every optimizer) and returns them. For a neural network, the parameters that we pass into the optimizer are the weights and biases of the network. We can use the optimizer class to learn any set of parameters (of arbitrary shape). The parameters have to be NumPy arrays. 
 
-*Below, we have a function of the form f(x) = N1(p(x) + **w**N2(x)) where p is a polynomial and N1 and N2 are neural networks and **w** is parameter - we compute the gradient of the loss function w.r.t to all the parameters of f do gradient descent...*
+Below, we have a function of the form f(x) = N1(p(x) + **w**N2(x)) where p is a polynomial and N1 and N2 are neural networks and **w** is parameter - we compute the gradient of the loss function w.r.t to all the parameters of f do gradient descent...
 
 ![](gd.png)
 
@@ -99,6 +99,7 @@ LeNet-5 trained on the cifar10 dataset. There are 10 classes and 60000 32x32x3 R
 #### The LeNet-5 CNN architecture -
 
 ![](LeNet-5.jpg)
+
 ![](LeNet5dl2.png)
 
 #### Some images from the cifar10 -
