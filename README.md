@@ -75,6 +75,9 @@ Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the a
 
 ![](optims.gif)
 
+# LENET5-cifar10-dl2.ipynb
+LeNet-5 trained on cifar10. cifar10 is a harder than MNIST (RGB instead of grayscale images and more variation). 
+
 #### The LeNet-5 CNN architecture
 
 ![](LeNet-5.jpg)
