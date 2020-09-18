@@ -81,12 +81,12 @@ My implementation of the GAN training algorithm using dl2.
 ![](gan.png)
 
 # CNN-MLP-benchmarks-dl2.ipynb
-Implementation of CNN and MLP MNIST classifiers using dl2. Here, I compare the accuracies of various gradient descent optimizers (SGD, Momentum, RMSprop, Adam and Adagrad).
+CNN and MLP classifiers using dl2. Here, I compare the accuracies of various gradient descent optimizers (SGD, Momentum, RMSprop, Adam and Adagrad).
 
-#### Kernels
+#### Kernels -
 ![](kernels.png)
 
-#### Weights
+#### Weights -
 ![](weights.png)
 
 #### Different optimizers reach a local minima at different rates -
