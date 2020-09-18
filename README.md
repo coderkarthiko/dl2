@@ -51,7 +51,7 @@ In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer
 
 ![](gd.png)
 
-# CYBENKO's-THEOREM-dl2.ipynb
+# UAT-dl2.ipynb
 Neural nets are universal function approximators! In this notebook, I approximate a parabola.
 
 #### Neural network approximating a spiral -
