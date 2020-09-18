@@ -1,5 +1,5 @@
 # dl.py - a small neural network library
-dl is a small library I made to understand how neural networks and gradient descent optimizers work. It's quite simple and doesn't support CNNs. I have implemented the standard backpropagation algorithm (show below). Gradient descent optimizers like SGD, Momentum, Adam, RMSprop and Adagrad can be used for training. 
+dl is a small library I made to understand how neural networks and gradient descent optimizers work. It's quite simple and doesn't support CNNs. I have implemented the standard backpropagation algorithm (shown below). Gradient descent optimizers like SGD, Momentum, Adam, RMSprop and Adagrad can be used for training. 
 
 ![](backpropagation.png)
 
