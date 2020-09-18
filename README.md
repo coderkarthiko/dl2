@@ -1,3 +1,12 @@
+# Neural networks = AWESOME!
+I first got into AI when I saw Nvidia's GauGAN video - an AI that changes rough sketches to realistic landscapes. Then I saw Google DeepMind's RL agent learn to play Atari Breakout and I was hooked! I learnt as much as I can about neural nets and all the cool stuff we can do with them. I learnt all the math behind some really important ML algorithms and I implemented my own neural network library (which is the main thing about this project). 
+
+#### GauGAN example -
+![](gaugan.jpg)
+
+#### Google DeepMind's Atari agent playing Breakout - 
+![]()
+
 # dl.py - a small neural network library
 dl is a small library I made to understand how neural networks and gradient descent optimizers work. It's quite simple and doesn't support CNNs. I have implemented the standard backpropagation algorithm (shown below). Gradient descent optimizers like SGD, Momentum, Adam, RMSprop and Adagrad can be used for training. 
 
