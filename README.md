@@ -11,7 +11,7 @@ dl2 is dl but with convolution, transpose convolution, sub-sampling and super-sa
 #### Things I've learnt -
 1. As part of this project I learnt multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...personally, the fact that "learning" <=> optimizing an objective function <- I find it really elegant :')...
 
-2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this...
+2. Backpropagation to up-sampling and transpose convolution is computationally similiar to sub-sampling and convolution layers...I would have implemented them earlier if I had realized this.
 
 ![](cnnforward.png)
 
