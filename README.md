@@ -46,13 +46,15 @@ In TensorFlow, we can simply do opt = optimizers.Adam(...). Here, each optimizer
 
 ![](gd.png)
 
-# UAT-dl2.ipynb
+# UAT-dl2.ipynb - Universal Approximation Theorem
 
-![](approx.png)
-
-#### Universal Approximation Theorem -
+NNs are universal function approximators.
 
 ![](uat.png)
+
+Approximation of the f(x) = x^2 + x - sqrt(x) -
+
+![](approx.png)
 
 # GATES-dl.ipynb - modelling logic gates using neural networks
 A classic problem in machine learning is using a neural network to model XOR. XOR is not a linearly separable function - and neural networks are good at approximating non-linear transformations. Logic gates have binary inputs but neural networks can have real inputs. So not only can we input 0 and 1, but all pairs of numbers in the range [0, 1] (with finite step size - say, 0.01). The contour plots of the corresponding outputs are shown below. Black regions and beyond => 1 and yellow regions and beyond => 0. In the plots, we can clearly see boundaries (black -> yellow) where the output jumps from 1 to 0 and 0 to 1.
