@@ -26,11 +26,12 @@ def batch(arr, batch_size):
 
 
 # return accuracy of classification model
-def accuracy(model, x, y):
+def accuracy(model, x, y, tqdm_disable=True):
     count = 0
-    for xi, yi in zip(x, y):
-        count += np.argmax(model.forward(xi)) == np.argmax(yi)
-    return 100 * count / len(y)
+    n = int((len(x) + len(y)) / 2)
+    for i in tqdm(range(n), disable=tqdm_disable):
+        count += np.argmax(model.forward(x[i])) == np.argmax(y[i])
+    return 100 * count / n
 
 
 # normalize data
@@ -57,9 +58,15 @@ def conv2d(filters, filters_dim, strides, activation='none', use_bias=True, inpu
 
 
 # max pooling
-def pool(pool_size, strides, input_dim=None):
+def max_pool(pool_size, strides, input_dim=None):
     return {'input_dim': input_dim, 'output_dim': None, 'pool_size': pool_size, 
-            'strides': strides, 'layer': 'pool', 'activation': 'none'}
+            'strides': strides, 'layer': 'max_pool', 'activation': 'none'}
+
+
+# average pooling
+def avg_pool(pool_size, strides, input_dim=None):
+    return {'input_dim': input_dim, 'output_dim': None, 'pool_size': pool_size, 
+            'strides': strides, 'layer': 'avg_pool', 'activation': 'none'}
 
 
 # flatten 
@@ -138,7 +145,7 @@ def df(x, a):
 # compute loss
 def loss(x, y, loss_fn):
     if loss_fn == 'mse':
-        return (y - x) ** 2
+        return 0.5 * (y - x) ** 2
     elif loss_fn == 'ce':
         return - y * np.log(x) - (1 - y) * np.log(1 - x)
     elif loss_fn == 'log':
@@ -224,6 +231,36 @@ def poolbackward(error, amxs, pool_size, strides, output_dim):
             c = strides[1] * j
             for k in range(input_dim[2]):
                 x_grad[r + int(amxs[i, j, k] // pool_size[1]), c + int(amxs[i, j, k] % 2), k] = error[i, j, k]
+    return x_grad
+
+
+# average pool forward pass
+@nb.jit(nopython=use_numba)
+def poolAforward(x, pool_size, strides, output_dim):
+    input_dim = np.shape(x)
+    z = np.zeros(output_dim)
+    x /= pool_size[0] * pool_size[1]
+    for i in range(output_dim[0]):
+        r_, _r = strides[0] * i, strides[0] * i + pool_size[0]
+        for j in range(output_dim[1]):
+            c_, _c = strides[1] * j, strides[1] * j + pool_size[1]
+            for k in range(output_dim[2]):
+                z[i, j, k] = np.sum(x[r_:_r, c_:_c, k])
+    return z
+
+
+# average pool backward pass
+@nb.jit(nopython=use_numba)
+def poolAbackward(error, pool_size, strides, output_dim):
+    input_dim = np.shape(error)
+    x_grad = np.zeros(output_dim)
+    error /= pool_size[0] * pool_size[1]
+    for i in range(input_dim[0]):
+        r_, _r = strides[0] * i, strides[0] * i + pool_size[0]
+        for j in range(input_dim[1]):
+            c_, _c = strides[1] * j, strides[1] * j + pool_size[1]
+            for k in range(input_dim[2]):
+                x_grad[r_:_r, c_:_c, k] += error[i, j, k]
     return x_grad
 
 
@@ -336,7 +373,7 @@ class GD(optimizer):
 
 # RMSprop - https://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf
 class RMSprop(optimizer):
-    def __init__(self, parameters, lr=1e-3, beta=0.1, epsilon=1e-5):
+    def __init__(self, parameters, lr=1e-3, beta=0.1, epsilon=1e-6):
         super().__init__(parameters, lr)
         self.beta, self.epsilon = beta, epsilon
         self.sP = self.zero()
@@ -353,7 +390,7 @@ class RMSprop(optimizer):
         
 # Adam - https://arxiv.org/abs/1412.6980
 class Adam(optimizer):
-    def __init__(self, parameters, lr=3e-4, beta=0.9, gamma=0.999, epsilon=1e-5):
+    def __init__(self, parameters, lr=3e-4, beta=0.9, gamma=0.999, epsilon=1e-6):
         super().__init__(parameters, lr)
         self.t = 1
         self.epsilon = epsilon
@@ -364,7 +401,7 @@ class Adam(optimizer):
         self.vP = [self.beta * vP + (1 - self.beta) * dP for vP, dP in zip(self.vP, self.dP)]
         self.mP = [self.gamma * mP + (1 - self.gamma) * (dP ** 2) for mP, dP in zip(self.mP, self.dP)]
         vP, mP = [vP / (1 - self.beta ** self.t) for vP in self.vP], [mP / (1 - self.gamma ** self.t) for mP in self.mP] 
-        dP = [self.lr * vP / (mP ** 0.5 + self.epsilon) for vP, mP in zip(self.vP, self.mP)]
+        dP = [self.lr * vP / (mP + self.epsilon) ** 0.5 for vP, mP in zip(self.vP, self.mP)]
         for i in range(len(self.P)): self.P[i] -= dP[i]
         return self.P
     
@@ -375,7 +412,7 @@ class Adam(optimizer):
         
 # Adagrad - https://ml-cheatsheet.readthedocs.io/en/latest/optimizers.html
 class Adagrad(optimizer):
-    def __init__(self, parameters, lr=1e-2, epsilon=1e-5):
+    def __init__(self, parameters, lr=1e-2, epsilon=1e-6):
         super().__init__(parameters, lr)
         self.epsilon = epsilon
         self.sP = self.zero() 
@@ -397,9 +434,8 @@ class NN:
     def __init__(self, *layers):
         self.n, self.trainable_params = 0, 0
         self.opt, self.loss_fn = None, None
-        self.store_gradients, self.tqdm_disable = False, False
-        self.layers = []
-        self.losses, self.errors, self.dW, self.dB = [], [], [], []
+        self.tqdm_disable = False
+        self.layers, self.losses, self.errors = [], [], []
         self.W, self.B, self.L = [], [], []
         if layers:
             self.layers += list(layers)
@@ -438,7 +474,7 @@ class NN:
                 self.trainable_params += w_params + b_params
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
                 
-            elif self.layers[i]['layer'] == 'pool': # max pool 
+            elif self.layers[i]['layer'] == 'max_pool': # max pool 
                 input_dim = self.layers[i]['input_dim']
                 pool_size, strides = self.layers[i]['pool_size'], self.layers[i]['strides']
                 output_dim = (int((input_dim[0] - pool_size[0]) / strides[0]) + 1, 
@@ -448,12 +484,23 @@ class NN:
                 self.B.append(np.zeros(0))
                 self.L.append([np.zeros(output_dim), []])
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
+                    
+            elif self.layers[i]['layer'] == 'avg_pool': # average pool
+                input_dim = self.layers[i]['input_dim']
+                pool_size, strides = self.layers[i]['pool_size'], self.layers[i]['strides']
+                output_dim = (int((input_dim[0] - pool_size[0]) / strides[0]) + 1, 
+                              int((input_dim[1] - pool_size[1]) / strides[1]) + 1, input_dim[2])
+                self.layers[i]['output_dim'] = output_dim
+                self.W.append(np.zeros(0))
+                self.B.append(np.zeros(0))
+                self.L.append(np.zeros(output_dim))
+                if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
                 
             elif self.layers[i]['layer'] == 'flatten': # flatten 
                 input_dim = self.layers[i]['input_dim']
                 output_dim = input_dim[0] * input_dim[1] * input_dim[2]
                 self.layers[i]['output_dim'] = output_dim
-                bound = (6 ** 0.5) / (2 * output_dim)
+                bound = 1 / output_dim ** 0.5
                 self.W.append(np.zeros(0))
                 self.B.append(np.random.uniform(-bound, bound, output_dim) if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
@@ -462,9 +509,9 @@ class NN:
             
             elif self.layers[i]['layer'] == 'dense': # fc-layer
                 input_dim, output_dim = self.layers[i]['input_dim'], self.layers[i]['output_dim']
-                boundW, boundB = (6 / (input_dim + output_dim)) ** 0.5, (6 / output_dim) ** 0.5
-                self.W.append(np.random.uniform(-boundW, boundW, (output_dim, input_dim)))
-                self.B.append(np.random.uniform(-boundB, boundB, output_dim) if self.layers[i]['use_bias'] else np.zeros(0))
+                bound = 1 / input_dim ** 0.5
+                self.W.append(np.random.uniform(-bound, bound, (output_dim, input_dim)))
+                self.B.append(np.random.uniform(-bound, bound, output_dim) if self.layers[i]['use_bias'] else np.zeros(0))
                 self.L.append(np.zeros(output_dim))
                 self.trainable_params += output_dim * input_dim + self.layers[i]['use_bias'] * output_dim
                 if i < self.n: self.layers[i + 1]['input_dim'] = output_dim
@@ -547,46 +594,51 @@ class NN:
         for i in range(1, self.n):
             
             if self.layers[i]['layer'] == 'conv2d':
-                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i] = cnnforward(self.L[i], self.W[i - 1], self.layers[i]['strides'], self.layers[i]['output_dim'])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
-            elif self.layers[i]['layer'] == 'pool':
-                self.L[i][0] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+            elif self.layers[i]['layer'] == 'max_pool':
+                self.L[i][0] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i][0], self.L[i][1] = poolforward(self.L[i][0], self.layers[i]['pool_size'], 
                                                          self.layers[i]['strides'], self.layers[i]['output_dim'])
                 
+            elif self.layers[i]['layer'] == 'avg_pool':
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
+                self.L[i] = poolAforward(self.L[i], self.layers[i]['pool_size'], 
+                                         self.layers[i]['strides'], self.layers[i]['output_dim'])
+                
             elif self.layers[i]['layer'] == 'flatten':
-                self.L[i] = self.L[i - 1][0].ravel() if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1].ravel()
+                self.L[i] = self.L[i - 1][0].ravel() if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1].ravel()
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
             elif self.layers[i]['layer'] == 'dense':
-                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i] = fcforward(self.W[i - 1], self.L[i - 1])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
             elif self.layers[i]['layer'] == 'expand':
-                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i] = np.reshape(self.L[i - 1], self.layers[i]['output_dim'])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
             elif self.layers[i]['layer'] == 'poolT':
-                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i] = poolTforward(self.L[i], self.layers[i]['pool_size'], 
                                          self.layers[i]['strides'], self.layers[i]['output_dim'])
                 
             elif self.layers[i]['layer'] == 'conv2dT':
-                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i] = cnnTforward(self.L[i], self.W[i - 1], self.layers[i]['strides'], self.layers[i]['output_dim'])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
                 
             elif self.layers[i]['layer'] == 'batchNorm':
-                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1]
+                self.L[i] = self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1]
                 self.L[i] = self.W[i - 1] * BNforward(self.L[i])
                 if self.layers[i]['use_bias']: self.L[i] += self.B[i - 1]
                 self.L[i] = f(self.L[i], self.layers[i]['activation'])
@@ -601,23 +653,32 @@ class NN:
             
             if self.layers[i]['layer'] == 'conv2d':
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
-                filters_grad, error = cnnbackward(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1],
+                filters_grad, error = cnnbackward(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1],
                                                   self.W[i - 1], error, self.layers[i]['strides'], self.layers[i]['requires_wgrad'])
                 dW.append(filters_grad)
                 error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
                 
-            elif self.layers[i]['layer'] == 'pool':
+            elif self.layers[i]['layer'] == 'max_pool':
                 dB.append(np.zeros(0))
                 dW.append(np.zeros(0))
                 error = poolbackward(error, self.L[i][1], self.layers[i]['pool_size'], 
                                      self.layers[i]['strides'], self.layers[i]['input_dim'])
-                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
+                
+            elif self.layers[i]['layer'] == 'avg_pool':
+                dB.append(np.zeros(0))
+                dW.append(np.zeros(0))
+                error = poolAbackward(error, self.layers[i]['pool_size'], 
+                                      self.layers[i]['strides'], self.layers[i]['input_dim'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'flatten':            
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
                 dW.append(np.zeros(0))
                 error = np.reshape(error, self.layers[i]['input_dim'])
-                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
                             self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'dense':
@@ -630,7 +691,7 @@ class NN:
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
                 dW.append(np.zeros(0))
                 error = error.ravel()
-                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
                             self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'poolT':
@@ -638,7 +699,7 @@ class NN:
                 dW.append(np.zeros(0))
                 error = poolTbackward(error, self.L[i], self.layers[i]['pool_size'], 
                                       self.layers[i]['strides'], self.layers[i]['input_dim'])
-                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
                             self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'conv2dT':
@@ -646,34 +707,30 @@ class NN:
                 filters_grad, error = cnnTbackward(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
                                                    self.W[i - 1], error, self.layers[i]['strides'], self.layers[i]['requires_wgrad'])
                 dW.append(filters_grad)
-                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'pool' else self.L[i - 1], 
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
                             self.layers[i - 1]['activation'])
                 
             elif self.layers[i]['layer'] == 'batchNorm':
                 dB.append(error if self.layers[i]['use_bias'] else np.zeros(0))
                 dW.append(error * self.L[i])
                 error = self.W[i - 1] * BNbackward(self.L[i], error)
-                error *= df(self.L[i - 1], self.layers[i - 1]['activation'])
+                error *= df(self.L[i - 1][0] if self.layers[i - 1]['layer'] == 'max_pool' else self.L[i - 1], 
+                            self.layers[i - 1]['activation'])
                 
         return np.flip(dW, 0), np.flip(dB, 0), error
     
     def fit(self, x, y, epochs, batch_size=1, shuffle=False):
         losses = []
-        n = int((len(x) + len(y)) / 2) # <- I dunno why I wrote this way but maybe I've got OCD :'D
+        n = int((len(x) + len(y)) / 2) 
         for epoch in range(epochs):
-            dWe, dBe = np.array([]), np.array([])
             LOSS, ERROR = np.zeros(np.shape(y)[1:]), np.zeros(np.shape(x)[1:])
             if shuffle: x, y = shuffle_data(x, y)
             for i in tqdm(range(n), disable=self.tqdm_disable):
                 prediction = self.forward(x[i])[0]
-                if self.layers[-1]['layer'] == 'pool': prediction = prediction[0]
+                if self.layers[-1]['layer'] == 'max_pool': prediction = prediction[0]
                 error = self.grad(y[i], self.loss_fn)
                 dW, dB, error = self.backward(error) 
-                self.opt.dP[0] += dW
-                self.opt.dP[1] += dB
-                if self.store_gradients: 
-                    np.append(dWe, dW)
-                    np.append(dBe, dB)
+                self.opt.dP[0], self.opt.dP[1] = self.opt.dP[0] + dW, self.opt.dP[1] + dB
                 if not i % batch_size or i == n - 1:
                     self.opt.dP = [dP / batch_size for dP in self.opt.dP]
                     self.W, self.B = self.opt.step() 
@@ -681,8 +738,6 @@ class NN:
                 LOSS += loss(prediction, y[i], self.loss_fn)
                 ERROR += error
             self.opt.reset()
-            self.dW.append(dWe / n)
-            self.dB.append(dBe / n)
             self.losses.append(LOSS / n)
             self.errors.append(ERROR / n)
         return {'losses': self.losses, 'errors': self.errors}
