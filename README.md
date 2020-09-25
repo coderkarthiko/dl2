@@ -14,16 +14,16 @@ dl is a small library I made to understand how neural networks and gradient desc
 ![](backpropagation.png)
 
 # dl2.py - an even better neural network library
-dl2.py is a much better version of dl.py. It's a neural network library which supports multi-layer perceptrons (the vanilla neural networks), convolutional neural networks (neural nets used for visual processing) and gradient descent optimizers. I've implemented all matrix operations (forward and backward pass in a neural net) using NumPy. We can implement almost any ML algorithm using dl2.py. 
+dl2.py is a much better version of dl.py but it's still quite simple. It's a neural network library which supports multi-layer perceptrons (the vanilla neural networks), convolutional neural networks (neural nets used for visual processing) and gradient descent optimizers. I've implemented all matrix operations (forward and backward pass in a neural net) using NumPy. We can implement almost any ML algorithm using dl2.py. 
 
 #### Things I've learnt and challenges I faced -
-1. In order to understand neural networks I had to learn multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...I realized that "learning" in "machine learning" simply reduces to optimizing an objective function! At first, my library was very simple. But overtime, I've added more things to it as I learnt new things.
+1. In order to understand neural networks I had to learn multivariable calculus and some linear algebra - ML involves convex optimization and a whole LOT of matrices...I realized that "learning" in "machine learning" simply reduces to optimizing an objective function. At first, my library was very simple. But overtime, I've added more things to it as I learnt new things.
 
-2. My library was very slow and I wanted to see how well it performed at classifying images in the cifar10 dataset (a dataset of 60000 images) but it was VERY slow. Then I discovered Numba, which sped up NumPy. It improved the speed of training neural nets by an order of magnitude! I then implemented LeNet5 (one of the first neural nets used for handwritten character recognition) to classify images from the cifar10 dataset (see last section) and it achieved an accuracy of 60 %. 
+2. My library was very slow and I wanted to see how well it performed at classifying images in the cifar10 dataset (a dataset of 60000 images) but it was VERY slow. Then I discovered Numba, which sped up NumPy. It improved the speed of training neural nets by an order of magnitude! I then implemented LeNet5 (one of the first neural nets used for handwritten character recognition) using dl2 to classify images from the cifar10 dataset (see last section) and it achieved an accuracy of 60 %. 
  
 ![](cnnforward.png)
 
-3. Convolutional neural networks are simply sparse multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. Once I understood how CNNs worked, I benchmarked the performace of the same CNN architecture with different optimizers (see CNN-MLP-benchmarks-dl2.ipynb).
+3. Convolutional neural networks are simply sparsely connected multi-layer perceptrons. If convolution layers are fully-connected we will be able to learn more features but the number of operations to get through a single convolution layer will explode. Once I understood how CNNs worked, I benchmarked the performace of the same CNN architecture with different optimizers (see CNN-MLP-benchmarks-dl2.ipynb). 
 
 ![](conv_forward.png)
 
@@ -33,7 +33,7 @@ dl2.py is a much better version of dl.py. It's a neural network library which su
 
 ![](bnorm_grad.png)
 
-5. Understanding how GANs worked - GANs are probably one of the coolest things in machine learning. They are the same neural net architectures used to make deepfakes and realistic artworks. I've implemented a GAN using TensorFlow (see GANtf.ipynb) and demonstration the training process of a GAN using dl2 (see GAT-dl2.ipynb).
+5. Understanding how GANs worked - GANs are probably one of the coolest things in machine learning (though they were invented all the way back in the AI stone age of 2014). They are the same neural net architectures used to make deepfakes and realistic artworks. I've implemented a GAN using TensorFlow (see GANtf.ipynb) and demonstration the training process of a GAN using dl2 (see GAT-dl2.ipynb).
 
 # demo.ipynb - how dl2 works
 
@@ -112,7 +112,7 @@ LeNet-5 trained on the cifar10 dataset. There are 10 classes and 60000 32x32x3 R
 
 ![](LeNet5dl2.png)
 
-#### Some images from the cifar10 -
+#### Some images from the cifar10 dataset -
 ![](cifar10.png)
 
 #### Loss landscape of ResNet-10 trained on cifar10 -
