@@ -33,7 +33,7 @@ dl2.py is a much better version of dl.py but it's still quite simple. It's a neu
 
 ![](bnorm_grad.png)
 
-5. Understanding how GANs worked - GANs are probably one of the coolest things in machine learning (though they were invented all the way back in the AI stone age of 2014). They are the same neural net architectures used to make deepfakes and realistic artworks. I've implemented a GAN using TensorFlow (see GANtf.ipynb) and demonstration the training process of a GAN using dl2 (see GAT-dl2.ipynb).
+5. Understanding how GANs work - GANs are probably one of the coolest things in machine learning (though they were invented all the way back in the AI stone age of 2014). They are the same neural net architectures used to make deepfakes and realistic artworks. I've implemented a GAN using TensorFlow (see GANtf.ipynb) and demonstrated how backprop is done in GANs using dl2 (see GAT-dl2.ipynb).
 
 # demo.ipynb - how dl2 works
 
